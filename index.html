@@ -6,57 +6,61 @@
 		<title>Cydran • TodoMVC</title>
 		<link rel="stylesheet" href="node_modules/todomvc-common/base.css">
 		<link rel="stylesheet" href="node_modules/todomvc-app-css/index.css">
+		<link rel="stylesheet" href="css/app.css">
 		<script src="node_modules/todomvc-common/base.js"></script>
-		<script src="node_modules/cydran/dist/cydran.min.js"></script>
+		<script src="node_modules/cydran/dist/cydran.js"></script>
 		<script src="js/app.js"></script>
 	</head>
 
-	<body></body>
+	<body>
+		<div id="appbody"></div>
+		<footer class="info">
+			<p>Double-click to edit a todo</p>
+			<p>Written by <a href="https://github.com/orgs/cydran/teams/cydran-devs">Cydran Devs</a></p>
+			<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+		</footer>
+	</body>
 
 	<template id="app">
-		<div>
-			<section class="todoapp">
-				<header class="header">
-					<h1>todos</h1>
-					<input class="new-todo" autofocus autocomplete="off" placeholder="What needs to be done?" c:onkeyup="m().addTodo()">
-				</header>
-				<section class="main" c:if="m().todos.length">
-					<input id="toggle-all" class="toggle-all" type="checkbox" c:model="m().allDone">
-					<label for="toggle-all">Mark all as complete</label>
-					<ul class="todo-list" c:repeat="m().filteredTodos" c:repeat:mode="none">
-						<template type="item">
-							<li class="todo" c:class="{'completed': i().completed, 'editing': i() == m().editedTodo}">
-								<div class="view">
-									<input class="toggle" type="checkbox" c:model="i().completed">
-									<label c:ondblclick="m().editTodo(i())">{{i().title}}</label>
-									<button class="destroy" c:onclick="m().removeTodo(i())"></button>
-								</div>
-								<input class="edit" type="text" c:model="i().title" c:force-focus="i() == m().editedTodo"
-									c:onblur="m().doneEdit(i())" c:onkeyup="m().finishEdit(i())">
-							</li>
-						</template>
-					</ul>
-				</section>
-				<footer class="footer" c:if="m().todos.length">
-					<span class="todo-count">
-						<strong>{{m().remaining}}</strong> {{pluralize('item', m().remaining)}} left
-					</span>
-					<ul class="filters">
-						<li><a href="#/all" c:class="{'selected': m().visibility == 'all'}">All</a></li>
-						<li><a href="#/active" c:class="{'selected': m().visibility == 'active'}">Active</a></li>
-						<li><a href="#/completed" c:class="{'selected': m().visibility == 'completed'}">Completed</a></li>
-					</ul>
-					<button class="clear-completed" c:onclick="m().removeCompleted()" c:if="m().todos.length > m().remaining">
-						Clear completed
-					</button>
-				</footer>
+		<section class="todoapp">
+			<header class="header">
+				<h1>todos</h1>
+				<input class="new-todo" autofocus autocomplete="off" placeholder="What needs to be done?" c:onkeyup="m().addTodo(event)" c:model="m().newTodoValue">
+			</header>
+			<section class="main" c:if="m().todos.length">
+				<input id="toggle-all" class="toggle-all" type="checkbox" c:model="m().allDone">
+				<label for="toggle-all">Mark all as complete</label>
+				<ul class="todo-list" c:repeat="m().filteredTodos()" c:repeat:mode="generated">
+					<template type="item">
+						<c:component name="Todo"></c:component>
+					</template>
+				</ul>
 			</section>
-			<footer class="info">
-				<p>Double-click to edit a todo</p>
-				<p>Written by <a href="https://github.com/orgs/cydran/teams/cydran-devs">Cydran Devs</a></p>
-				<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+			<footer class="footer" c:if="m().todos.length">
+				<span class="todo-count">
+					<strong>{{m().remaining}}</strong> {{pluralize('item', m().remaining)}} left
+				</span>
+				<ul class="filters">
+					<li><a c:onclick="m().setFilter('all')" class="filter" c:class="{'selected': m().filterVisiblity == 'all'}">All</a></li>
+					<li><a c:onclick="m().setFilter('active')" class="filter" c:class="{'selected': m().filterVisiblity == 'active'}">Active</a></li>
+					<li><a c:onclick="m().setFilter('completed')" class="filter" c:class="{'selected': m().filterVisiblity == 'completed'}">Completed</a></li>
+				</ul>
+				<button class="clear-completed" c:onclick="m().removeCompleted()" c:if="m().todos.length > m().remaining">
+					Clear completed
+				</button>
 			</footer>
-		</div>
+		</section>
+	</template>
+
+	<template id="todoitem">
+		<li class="todo" c:class="{'completed': i().completed}" c:class="'editing': m().editMode}">
+			<div class="view">
+				<input class="toggle" type="checkbox" c:onclick="m().toggleComplete()" c:checked="!i().completed">
+				<label c:ondblclick="m().editMode = true">{{i().title}}</label>
+				<button class="destroy" c:onclick=""></button>
+			</div>
+			<input class="edit" type="text" c:model="i().title" c:force-focus="m().editMode" c:onblur="m().doneEdit()" c:onkeyup="m().finishEdit(event)">
+		</li>
 	</template>
 
 </html>
