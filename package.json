@@ -1,0 +1,26 @@
+{
+  "name": "cydran-todomvc",
+  "version": "0.0.1",
+  "description": "TodoMVC implementation with Cydran MVVM framework",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "keywords": [
+    "todomvc",
+    "cydran",
+    "mvvm",
+    "framework"
+  ],
+  "author": "Cydran Dev Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cydran/cydran-todomvc/issues"
+  },
+  "homepage": "https://github.com/cydran/cydran-todomvc#readme",
+  "dependencies": {
+    "cydran": "0.1.6",
+    "todomvc-app-css": "2.3.0",
+    "todomvc-common": "1.0.5"
+  }
+}
