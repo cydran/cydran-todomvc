@@ -55,7 +55,7 @@ window.onload = function() {
 
   builder("body")
     .withDebugLogging()
-		.withScopeItem("pluralize", (str, cnt) => (cnt > 1) ? str + "s": str)
+		.withScopeItem("pluralize", (str, cnt) => (cnt > 1) ? (str + "s") : str)
     .withPrototype(App.name, App)
     .withInitializer(stage => {
       stage.setComponentFromRegistry(App.name);
