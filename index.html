@@ -36,7 +36,7 @@
 					</template>
 				</ul>
 			</section>
-			<footer class="footer" c:if="m().todos.length">
+			<footer class="footer" c:if="m().todos.length > 0">
 				<span class="todo-count">
 					<strong>{{m().remaining}}</strong> {{pluralize('item', m().remaining)}} left
 				</span>
