@@ -125,7 +125,13 @@ window.onload = function() {
     edit() {
       this.inEditMode = true;
       this.origEditText = this.getItem().title;
-      this.log.ifDebug(() => "begin edit of todo: " + JSON.stringify(this.getItem()));
+			// timeout for browser behavior to flow the DOM
+      setTimeout(() => {
+      	this.getEl().querySelector("input[class=edit]").focus();
+      }, 1);
+      this.log.ifDebug(
+        () => "begin edit of todo: " + JSON.stringify(this.getItem())
+      );
     }
 
     cancelEdit() {
