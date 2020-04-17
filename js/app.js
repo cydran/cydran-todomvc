@@ -27,9 +27,9 @@ window.onload = function() {
       this.watch("m().todos", () => {
         this.remaining = this.todos.filter(t => !t.completed).length;
         this.completedCount = this.todos.length - this.remaining;
-				this.filteredTodos();
+        this.filteredTodos();
       });
-			this.watch("m().filterVisiblity", this.filteredTodos);
+      this.watch("m().filterVisiblity", this.filteredTodos);
     }
 
     init() {
@@ -102,7 +102,7 @@ window.onload = function() {
       this.todos.forEach(todo => {
         todo.completed = !this.togAllDoneOrNot;
       });
-			this.togAllDoneOrNot = !this.togAllDoneOrNot;
+      this.togAllDoneOrNot = !this.togAllDoneOrNot;
       console.log(this.todos);
     }
   }
@@ -119,7 +119,7 @@ window.onload = function() {
     }
 
     kill() {
-			this.getParent().removeTodo(this.getItem());
+      this.getParent().removeTodo(this.getItem());
     }
 
     edit() {
@@ -138,19 +138,23 @@ window.onload = function() {
       this.getItem().title = this.origEditText;
       this.origEditText = "";
       this.inEditMode = false;
-      this.log.ifDebug(() => "cancel edit of todo: " + JSON.stringify(this.getItem()));
+      this.log.ifDebug(
+        () => "cancel edit of todo: " + JSON.stringify(this.getItem())
+      );
     }
 
     doneEdit() {
       this.origEditText = "";
       this.inEditMode = false;
-      this.log.ifDebug(() => "finish edit of todo: " + JSON.stringify(this.getItem()));
+      this.log.ifDebug(
+        () => "finish edit of todo: " + JSON.stringify(this.getItem())
+      );
     }
 
     finishEdit(event) {
       switch (event.keyCode) {
         case KEY_ENTER:
-          this.doneEdit();
+          event.target.blur();
           break;
         case KEY_ESC:
           this.cancelEdit();
