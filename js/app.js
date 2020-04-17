@@ -7,10 +7,10 @@ window.onload = function() {
   const KEY_ENTER = 13;
   const KEY_ESC = 27;
   const APP_TEMPLATE = document
-    .querySelector("template[id=app]")
+    .querySelector('template[id=app]')
     .innerHTML.trim();
   const TODO_TEMPLATE = document
-    .querySelector("template[id=todoitem]")
+    .querySelector('template[id=todoitem]')
     .innerHTML.trim();
 
   class TodoItem {
@@ -25,32 +25,35 @@ window.onload = function() {
     constructor() {
       super(APP_TEMPLATE);
       this.log = this.getLogger();
-      this.watch("m().todos", () => {
+      this.watch('m().todos', () => {
         this.remaining = this.todos.filter(t => !t.completed).length;
+				this.completedCount = this.todos.length - this.remaining;
       });
-      this.watch("m().allDone", this.toggleAllComplete);
+      this.watch('m().allDone', this.toggleAllComplete);
+			this.on("killitem").forChannel(App.name).invoke(this.removeTodo);
     }
 
     init() {
       this.todos = [];
-      this.remaining = this.todos.length;
-      this.filterVisiblity = "all";
+      this.remaining = 0;
+      this.filterVisiblity = 'all';
       this.allDone = false;
-      this.newTodoValue = "";
+      this.newTodoValue = '';
+			this.completedCount = 0;
     }
 
     setFilter(filter) {
       this.filterVisiblity = filter;
-      this.log.ifDebug(() => "filter set to " + this.filterVisiblity);
+      this.log.ifDebug(() => 'filter set to ' + this.filterVisiblity);
     }
 
     filteredTodos() {
       let retval = [];
       switch (this.filterVisiblity) {
-        case "active":
+        case 'active':
           retval = this.todos.filter(t => t.completed == false);
           break;
-        case "completed":
+        case 'completed':
           retval = this.todos.filter(t => t.completed);
           break;
         default:
@@ -65,20 +68,21 @@ window.onload = function() {
         const newTodo = new TodoItem();
         newTodo.title = this.newTodoValue;
         this.todos.push(newTodo);
-        this.log.ifDebug(() => "new todo added: " + JSON.stringify(newTodo));
-        event.target.value = "";
+        this.log.ifDebug(() => 'new todo added: ' + JSON.stringify(newTodo));
+        event.target.value = '';
       }
     }
 
     removeTodo(todo) {
       const removeIdx = this.todos.indexOf(todo);
       this.todos.splice(removeIdx, 1);
+			this.log.ifDebug(() => 'todo item removed: ' + JSON.stringify(todo));
     }
 
     removeCompleted() {
       if (this.todos) {
-        const purgedTodos = this.todos.filter(item => !item.completed);
-        this.todos = purgedTodos;
+        const remaining = this.todos.filter(item => !item.completed);
+        this.todos = remaining;
       }
     }
 
@@ -89,6 +93,7 @@ window.onload = function() {
 					++retval;
 				}
 			}
+			return retval;
 		}
 
     toggleAllComplete() {
@@ -102,34 +107,39 @@ window.onload = function() {
   class Todo extends Component {
     constructor() {
       super(TODO_TEMPLATE);
+			this.log = this.getLogger();
     }
 
     init() {
-      this.editMode = false;
-      this.origEditText = "";
+      this.inEditMode = false;
+      this.origEditText = '';
     }
 
+		kill() {
+			this.broadcast(App.name, "killitem", this.getItem());
+		}
+
     edit() {
-      this.editMode = true;
+      this.inEditMode = true;
       this.origEditText = this.getItem().title;
       this.log.ifDebug(
-        () => "begin edit of todo" + JSON.stringify(this.getItem())
+        () => 'begin edit of todo' + JSON.stringify(this.getItem())
       );
     }
 
     cancelEdit() {
       this.getItem().title = this.origEditText;
-      this.origEditText = "";
-      this.editMode = false;
+      this.origEditText = '';
+      this.inEditMode = false;
       this.log.ifDebug(
-        () => "cancel edit of todo" + JSON.stringify(this.getItem())
+        () => 'cancel edit of todo' + JSON.stringify(this.getItem())
       );
     }
 
     doneEdit() {
-      this.origEditText = "";
-      this.editMode = false;
-      this.log.ifDebug(() => "finish edit of todo");
+      this.origEditText = '';
+      this.inEditMode = false;
+      this.log.ifDebug(() => 'finish edit of todo');
     }
 
     finishEdit(event) {
@@ -148,9 +158,9 @@ window.onload = function() {
     }
   }
 
-  builder("body>div#appbody")
+  builder('body>div#appbody')
     .withDebugLogging()
-    .withScopeItem("pluralize", (str, cnt) => (cnt != 1 ? str + "s" : str))
+    .withScopeItem('pluralize', (str, cnt) => (cnt != 1 ? str + 's' : str))
     .withPrototype(App.name, App)
     .withPrototype(Todo.name, Todo)
     .withInitializer(stage => {
