@@ -27,10 +27,10 @@
 				<h1>todos</h1>
 				<input class="new-todo" autofocus autocomplete="off" placeholder="What needs to be done?" c:onkeyup="m().addTodo(event)" c:model="m().newTodoValue">
 			</header>
-			<section class="main" c:if="m().todos.length">
-				<input id="toggle-all" class="toggle-all" type="checkbox" c:model="m().allDone">
+			<section class="main" c:if="m().todos.length > 0">
+				<input id="toggle-all" class="toggle-all" type="checkbox" c:onclick="m().toggleAll()">
 				<label for="toggle-all">Mark all as complete</label>
-				<ul class="todo-list" c:repeat="m().filteredTodos()" c:repeat:mode="generated">
+				<ul class="todo-list" c:repeat="m().filtered" c:repeat:mode="generated">
 					<template type="item">
 						<c:component name="Todo"></c:component>
 					</template>
@@ -45,7 +45,7 @@
 					<li><a c:onclick="m().setFilter('active')" class="filter" c:class="{'selected': m().filterVisiblity == 'active'}">Active</a></li>
 					<li><a c:onclick="m().setFilter('completed')" class="filter" c:class="{'selected': m().filterVisiblity == 'completed'}">Completed</a></li>
 				</ul>
-				<button class="clear-completed" c:onclick="m().removeCompleted()" c:if="m().completedCount > 0">
+				<button class="clear-completed" c:onclick="m().removeCompletedItems()" c:if="m().completedCount > 0">
 					Clear completed
 				</button>
 			</footer>
@@ -53,13 +53,13 @@
 	</template>
 
 	<template id="todoitem">
-		<li class="todo" c:class="{'completed': i().completed}" c:class="'editing': m().inEditMode}">
+		<li class="todo" c:class="{'completed': i().completed, 'editing': m().inEditMode}">
 			<div class="view">
-				<input class="toggle" type="checkbox" c:onclick="m().toggleComplete()" c:checked="!i().completed">
+				<input class="toggle" type="checkbox" c:onclick="m().isComplete()" c:checked="!i().completed">
 				<label c:ondblclick="m().edit()">{{i().title}}</label>
 				<button class="destroy" c:onclick="m().kill()"></button>
 			</div>
-			<input class="edit" type="text" c:model="i().title" c:force-focus="m().inEditMode" c:onblur="m().doneEdit()" c:onkeyup="m().finishEdit(event)">
+			<input class="edit" type="text" c:model="i().title" c:force-focus="m().inEditMode" c:onkeyup="m().finishEdit(event)" c:onblur="m().doneEdit()">
 		</li>
 	</template>
 

@@ -7,15 +7,14 @@ window.onload = function() {
   const KEY_ENTER = 13;
   const KEY_ESC = 27;
   const APP_TEMPLATE = document
-    .querySelector('template[id=app]')
+    .querySelector("template[id=app]")
     .innerHTML.trim();
   const TODO_TEMPLATE = document
-    .querySelector('template[id=todoitem]')
+    .querySelector("template[id=todoitem]")
     .innerHTML.trim();
 
   class TodoItem {
     constructor() {
-      this.id = null;
       this.title = null;
       this.completed = false;
     }
@@ -25,121 +24,121 @@ window.onload = function() {
     constructor() {
       super(APP_TEMPLATE);
       this.log = this.getLogger();
-      this.watch('m().todos', () => {
+      this.watch("m().todos", () => {
         this.remaining = this.todos.filter(t => !t.completed).length;
-				this.completedCount = this.todos.length - this.remaining;
+        this.completedCount = this.todos.length - this.remaining;
+				this.filteredTodos();
       });
-      this.watch('m().allDone', this.toggleAllComplete);
-			this.on("killitem").forChannel(App.name).invoke(this.removeTodo);
+			this.watch("m().filterVisiblity", this.filteredTodos);
     }
 
     init() {
       this.todos = [];
+      this.filtered = [];
       this.remaining = 0;
-      this.filterVisiblity = 'all';
-      this.allDone = false;
-      this.newTodoValue = '';
-			this.completedCount = 0;
+      this.filterVisiblity = "all";
+      this.togAllDoneOrNot = false;
+      this.newTodoValue = "";
+      this.completedCount = 0;
     }
 
     setFilter(filter) {
       this.filterVisiblity = filter;
-      this.log.ifDebug(() => 'filter set to ' + this.filterVisiblity);
+      this.log.ifDebug(() => "filter set to " + this.filterVisiblity);
     }
 
     filteredTodos() {
-      let retval = [];
+      this.log.ifDebug(() => "change in todos > setting filtered list");
       switch (this.filterVisiblity) {
-        case 'active':
-          retval = this.todos.filter(t => t.completed == false);
+        case "active":
+          this.filtered = this.todos.filter(t => t.completed == false);
           break;
-        case 'completed':
-          retval = this.todos.filter(t => t.completed);
+        case "completed":
+          this.filtered = this.todos.filter(t => t.completed);
           break;
         default:
-          retval = this.todos;
+          this.filtered = this.todos;
           break;
       }
-      return retval;
     }
 
     addTodo(event) {
       if (event.keyCode == KEY_ENTER) {
-        const newTodo = new TodoItem();
+        let newTodo = new TodoItem();
         newTodo.title = this.newTodoValue;
+        event.target.value = "";
         this.todos.push(newTodo);
-        this.log.ifDebug(() => 'new todo added: ' + JSON.stringify(newTodo));
-        event.target.value = '';
+        this.log.ifDebug(() => "new todo added: " + JSON.stringify(newTodo));
       }
     }
 
     removeTodo(todo) {
       const removeIdx = this.todos.indexOf(todo);
-      this.todos.splice(removeIdx, 1);
-			this.log.ifDebug(() => 'todo item removed: ' + JSON.stringify(todo));
+      if (removeIdx > -1) {
+        this.todos.splice(removeIdx, 1);
+        this.log.ifDebug(() => "todo item removed: " + JSON.stringify(todo));
+      }
     }
 
-    removeCompleted() {
+    removeCompletedItems() {
       if (this.todos) {
         const remaining = this.todos.filter(item => !item.completed);
         this.todos = remaining;
       }
     }
 
-		completedCount() {
-			let retval = 0;
-			for (const t in this.todos) {
-				if (t.completed) {
-					++retval;
-				}
-			}
-			return retval;
-		}
+    completedCount() {
+      let retval = 0;
+      for (const t in this.todos) {
+        if (t.completed) {
+          ++retval;
+        }
+      }
+      return retval;
+    }
 
-    toggleAllComplete() {
+    toggleAll() {
+      console.log("*** togAllDoneOrNot:", this.togAllDoneOrNot);
       this.todos.forEach(todo => {
-        todo.completed = this.allDone;
+        todo.completed = !this.togAllDoneOrNot;
       });
-			console.log(this.todos);
+			this.togAllDoneOrNot = !this.togAllDoneOrNot;
+      console.log(this.todos);
     }
   }
 
   class Todo extends Component {
     constructor() {
       super(TODO_TEMPLATE);
-			this.log = this.getLogger();
+      this.log = this.getLogger();
     }
 
     init() {
       this.inEditMode = false;
-      this.origEditText = '';
+      this.origEditText = "";
     }
 
-		kill() {
-			this.broadcast(App.name, "killitem", this.getItem());
-		}
+    kill() {
+			this.getParent().removeTodo(this.getItem());
+    }
 
     edit() {
       this.inEditMode = true;
       this.origEditText = this.getItem().title;
-      this.log.ifDebug(
-        () => 'begin edit of todo' + JSON.stringify(this.getItem())
-      );
+      this.log.ifDebug(() => "begin edit of todo: " + JSON.stringify(this.getItem()));
     }
 
     cancelEdit() {
       this.getItem().title = this.origEditText;
-      this.origEditText = '';
+      this.origEditText = "";
       this.inEditMode = false;
-      this.log.ifDebug(
-        () => 'cancel edit of todo' + JSON.stringify(this.getItem())
-      );
+      this.log.ifDebug(() => "cancel edit of todo: " + JSON.stringify(this.getItem()));
     }
 
     doneEdit() {
-      this.origEditText = '';
+      this.origEditText = "";
       this.inEditMode = false;
-      this.log.ifDebug(() => 'finish edit of todo');
+      this.log.ifDebug(() => "finish edit of todo: " + JSON.stringify(this.getItem()));
     }
 
     finishEdit(event) {
@@ -153,14 +152,14 @@ window.onload = function() {
       }
     }
 
-    toggleComplete() {
+    isComplete() {
       this.getItem().completed = !this.getItem().completed;
     }
   }
 
-  builder('body>div#appbody')
+  builder("body>div#appbody")
     .withDebugLogging()
-    .withScopeItem('pluralize', (str, cnt) => (cnt != 1 ? str + 's' : str))
+    .withScopeItem("pluralize", (str, cnt) => (cnt != 1 ? str + "s" : str))
     .withPrototype(App.name, App)
     .withPrototype(Todo.name, Todo)
     .withInitializer(stage => {
