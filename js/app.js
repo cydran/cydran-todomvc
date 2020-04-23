@@ -98,7 +98,6 @@ window.onload = function() {
     }
 
     toggleAll() {
-      console.log("*** togAllDoneOrNot:", this.togAllDoneOrNot);
       this.todos.forEach(todo => {
         todo.completed = !this.togAllDoneOrNot;
       });
