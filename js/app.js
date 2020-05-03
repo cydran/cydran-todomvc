@@ -23,6 +23,7 @@ window.onload = function() {
   class App extends Component {
     constructor() {
       super(APP_TEMPLATE);
+
       this.todos = [];
       this.filtered = [];
       this.remaining = 0;
@@ -30,7 +31,7 @@ window.onload = function() {
       this.togAllDoneOrNot = false;
       this.newTodoValue = "";
       this.completedCount = 0;
-			
+
       this.watch("m().todos", () => {
         this.remaining = this.todos.filter(t => !t.completed).length;
         this.completedCount = this.todos.length - this.remaining;
@@ -65,7 +66,9 @@ window.onload = function() {
         newTodo.title = this.newTodoValue;
         event.target.value = "";
         this.todos.push(newTodo);
-        this.getLogger().ifDebug(() => "new todo added: " + JSON.stringify(newTodo));
+        this.getLogger().ifDebug(
+          () => "new todo added: " + JSON.stringify(newTodo)
+        );
       }
     }
 
@@ -73,7 +76,9 @@ window.onload = function() {
       const removeIdx = this.todos.indexOf(todo);
       if (removeIdx > -1) {
         this.todos.splice(removeIdx, 1);
-        this.getLogger().ifDebug(() => "todo item removed: " + JSON.stringify(todo));
+        this.getLogger().ifDebug(
+          () => "todo item removed: " + JSON.stringify(todo)
+        );
       }
     }
 
@@ -117,9 +122,9 @@ window.onload = function() {
     edit() {
       this.inEditMode = true;
       this.origEditText = this.getItem().title;
-			// timeout for browser behavior to flow the DOM
+      // timeout for browser behavior to flow the DOM
       setTimeout(() => {
-      	this.getEl().querySelector("input[class=edit]").focus();
+        this.getEl().querySelector("input[class=edit]").focus();
       }, 1);
       this.getLogger().ifDebug(
         () => "begin edit of todo: " + JSON.stringify(this.getItem())
