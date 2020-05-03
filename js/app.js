@@ -23,7 +23,14 @@ window.onload = function() {
   class App extends Component {
     constructor() {
       super(APP_TEMPLATE);
-      this.log = this.getLogger();
+      this.todos = [];
+      this.filtered = [];
+      this.remaining = 0;
+      this.filterVisiblity = "all";
+      this.togAllDoneOrNot = false;
+      this.newTodoValue = "";
+      this.completedCount = 0;
+			
       this.watch("m().todos", () => {
         this.remaining = this.todos.filter(t => !t.completed).length;
         this.completedCount = this.todos.length - this.remaining;
@@ -32,23 +39,13 @@ window.onload = function() {
       this.watch("m().filterVisiblity", this.filteredTodos);
     }
 
-    init() {
-      this.todos = [];
-      this.filtered = [];
-      this.remaining = 0;
-      this.filterVisiblity = "all";
-      this.togAllDoneOrNot = false;
-      this.newTodoValue = "";
-      this.completedCount = 0;
-    }
-
     setFilter(filter) {
       this.filterVisiblity = filter;
-      this.log.ifDebug(() => "filter set to " + this.filterVisiblity);
+      this.getLogger().ifDebug(() => "filter set to " + this.filterVisiblity);
     }
 
     filteredTodos() {
-      this.log.ifDebug(() => "change in todos > setting filtered list");
+      this.getLogger().ifDebug(() => "change in todos > setting filtered list");
       switch (this.filterVisiblity) {
         case "active":
           this.filtered = this.todos.filter(t => t.completed == false);
@@ -68,7 +65,7 @@ window.onload = function() {
         newTodo.title = this.newTodoValue;
         event.target.value = "";
         this.todos.push(newTodo);
-        this.log.ifDebug(() => "new todo added: " + JSON.stringify(newTodo));
+        this.getLogger().ifDebug(() => "new todo added: " + JSON.stringify(newTodo));
       }
     }
 
@@ -76,7 +73,7 @@ window.onload = function() {
       const removeIdx = this.todos.indexOf(todo);
       if (removeIdx > -1) {
         this.todos.splice(removeIdx, 1);
-        this.log.ifDebug(() => "todo item removed: " + JSON.stringify(todo));
+        this.getLogger().ifDebug(() => "todo item removed: " + JSON.stringify(todo));
       }
     }
 
@@ -109,10 +106,6 @@ window.onload = function() {
   class Todo extends Component {
     constructor() {
       super(TODO_TEMPLATE);
-      this.log = this.getLogger();
-    }
-
-    init() {
       this.inEditMode = false;
       this.origEditText = "";
     }
@@ -128,7 +121,7 @@ window.onload = function() {
       setTimeout(() => {
       	this.getEl().querySelector("input[class=edit]").focus();
       }, 1);
-      this.log.ifDebug(
+      this.getLogger().ifDebug(
         () => "begin edit of todo: " + JSON.stringify(this.getItem())
       );
     }
@@ -137,7 +130,7 @@ window.onload = function() {
       this.getItem().title = this.origEditText;
       this.origEditText = "";
       this.inEditMode = false;
-      this.log.ifDebug(
+      this.getLogger().ifDebug(
         () => "cancel edit of todo: " + JSON.stringify(this.getItem())
       );
     }
@@ -145,7 +138,7 @@ window.onload = function() {
     doneEdit() {
       this.origEditText = "";
       this.inEditMode = false;
-      this.log.ifDebug(
+      this.getLogger().ifDebug(
         () => "finish edit of todo: " + JSON.stringify(this.getItem())
       );
     }
