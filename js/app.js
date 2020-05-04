@@ -1,4 +1,5 @@
 window.onload = function() {
+  console.time();
   const builder = cydran.builder;
   const Component = cydran.Component;
   const Stage = cydran.stage;
@@ -171,6 +172,7 @@ window.onload = function() {
     .withPrototype(Todo.name, Todo)
     .withInitializer(stage => {
       stage.setComponentFromRegistry(App.name);
+      console.timeEnd();
     })
     .build()
     .start();
