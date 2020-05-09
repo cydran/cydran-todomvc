@@ -147,10 +147,6 @@ window.onload = () => {
     edit() {
       this.inEditMode = true;
       this.origEditText = this.getItem().title;
-      // timeout for browser behavior to flow the DOM
-      setTimeout(() => {
-        this.getEl().querySelector("input[class=edit]").focus();
-      }, 1);
       this.getLogger().ifDebug(
         () => "begin edit of todo: " + JSON.stringify(this.getItem())
       );

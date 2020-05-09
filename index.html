@@ -63,7 +63,7 @@
 				<label c:ondblclick="m().edit()">{{i().title}}</label>
 				<button class="destroy" c:onclick="m().kill()"></button>
 			</div>
-			<input class="edit" type="text" c:model="i().title" c:onkeyup="m().finishEdit(event)" c:onblur="m().doneEdit()">
+			<input class="edit" type="text" c:model="i().title" c:onkeyup="m().finishEdit(event)" c:onblur="m().doneEdit()" c:force-focus="m().inEditMode">
 		</li>
 	</template>
 
