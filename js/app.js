@@ -1,9 +1,9 @@
-window.onload = function() {
+window.onload = () => {
   console.time();
   const builder = cydran.builder;
   const Component = cydran.Component;
-  const Stage = cydran.stage;
   const StageBuilder = cydran.StageBuilder;
+  const Stage = cydran.stage;
 
   const KEY_ENTER = 13;
   const KEY_ESC = 27;
@@ -21,14 +21,34 @@ window.onload = function() {
     }
   }
 
+  const todoList = "todolist";
+  const visibilityState = "visibility";
+  class TodoRepo {
+    storeAll(todos) {
+      window.localStorage.setItem(todoList, JSON.stringify(todos));
+    }
+
+    getAll() {
+      return JSON.parse(window.localStorage.getItem(todoList)) || [];
+    }
+
+    storeVisibleState(state) {
+      window.localStorage.setItem(visibilityState, state);
+    }
+
+    getVisibleState() {
+      return window.localStorage.getItem(visibilityState) || "all";
+    }
+  }
+
   class App extends Component {
     constructor() {
       super(APP_TEMPLATE);
-
-      this.todos = [];
+      this.repo = new TodoRepo();
+      this.todos = this.repo.getAll();
+      this.filterVisiblity = this.repo.getVisibleState();
       this.filtered = [];
       this.remaining = 0;
-      this.filterVisiblity = "all";
       this.togAllDoneOrNot = false;
       this.newTodoValue = "";
       this.completedCount = 0;
@@ -37,8 +57,12 @@ window.onload = function() {
         this.remaining = this.todos.filter(t => !t.completed).length;
         this.completedCount = this.todos.length - this.remaining;
         this.filteredTodos();
+        this.repo.storeAll(this.todos);
       });
-      this.watch("m().filterVisiblity", this.filteredTodos);
+      this.watch("m().filterVisiblity", () => {
+        this.repo.storeVisibleState(this.filterVisiblity);
+        this.filteredTodos();
+      });
     }
 
     setFilter(filter) {
@@ -172,8 +196,9 @@ window.onload = function() {
     .withPrototype(Todo.name, Todo)
     .withInitializer(stage => {
       stage.setComponentFromRegistry(App.name);
-      console.timeEnd();
     })
     .build()
     .start();
+
+  console.timeEnd();
 };
