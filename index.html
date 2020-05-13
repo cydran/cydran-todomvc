@@ -42,12 +42,9 @@
 					<strong>{{m().remaining}}</strong> {{pluralize('item', m().remaining)}} left
 				</span>
 				<ul class="filters">
-					<li><a c:onclick="m().setFilter('all')" class="filter"
-							c:class="{'selected': m().filterVisiblity == 'all'}">All</a></li>
-					<li><a c:onclick="m().setFilter('active')" class="filter"
-							c:class="{'selected': m().filterVisiblity == 'active'}">Active</a></li>
-					<li><a c:onclick="m().setFilter('completed')" class="filter"
-							c:class="{'selected': m().filterVisiblity == 'completed'}">Completed</a></li>
+					<li><a c:onclick="m().setFilter('all')" c:class="{'selected': m().filterVisiblity == 'all'}">All</a></li>
+					<li><a c:onclick="m().setFilter('active')" c:class="{'selected': m().filterVisiblity == 'active'}">Active</a></li>
+					<li><a c:onclick="m().setFilter('completed')" c:class="{'selected': m().filterVisiblity == 'completed'}">Completed</a></li>
 				</ul>
 				<button class="clear-completed" c:onclick="m().removeCompletedItems()" c:if="m().completedCount > 0">
 					Clear completed
