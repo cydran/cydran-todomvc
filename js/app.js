@@ -142,23 +142,23 @@ window.onload = () => {
     }
 
     kill() {
-      this.getParent().removeTodo(this.getItem());
+      this.getParent().removeTodo(this.getValue());
     }
 
     edit() {
       this.inEditMode = true;
-      this.origEditText = this.getItem().title;
+      this.origEditText = this.getValue().title;
       this.getLogger().ifDebug(
-        () => "begin edit of todo: " + JSON.stringify(this.getItem())
+        () => "begin edit of todo: " + JSON.stringify(this.getValue())
       );
     }
 
     cancelEdit() {
-      this.getItem().title = this.origEditText;
+      this.getValue().title = this.origEditText;
       this.origEditText = "";
       this.inEditMode = false;
       this.getLogger().ifDebug(
-        () => "cancel edit of todo: " + JSON.stringify(this.getItem())
+        () => "cancel edit of todo: " + JSON.stringify(this.getValue())
       );
     }
 
@@ -166,7 +166,7 @@ window.onload = () => {
       this.origEditText = "";
       this.inEditMode = false;
       this.getLogger().ifDebug(
-        () => "finish edit of todo: " + JSON.stringify(this.getItem())
+        () => "finish edit of todo: " + JSON.stringify(this.getValue())
       );
     }
 
@@ -182,7 +182,7 @@ window.onload = () => {
     }
 
     isComplete() {
-      this.getItem().completed = !this.getItem().completed;
+      this.getValue().completed = !this.getValue().completed;
     }
   }
 
