@@ -59,7 +59,7 @@ window.onload = () => {
         this.filteredTodos();
         this.repo.storeAll(this.todos);
       });
-			
+
       this.watch("m().filterVisiblity", () => {
         this.repo.storeVisibleState(this.filterVisiblity);
         this.filteredTodos();
