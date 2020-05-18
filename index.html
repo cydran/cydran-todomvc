@@ -42,7 +42,7 @@
 					<li><a c:onclick="m().filterVisiblity = 'active'" c:class="{'selected': m().filterVisiblity == 'active'}">Active</a></li>
 					<li><a c:onclick="m().filterVisiblity = 'completed'" c:class="{'selected': m().filterVisiblity == 'completed'}">Completed</a></li>
 				</ul>
-				<button class="clear-completed" c:onclick="m().removeCompletedItems()" c:if="m().completedCount > 0">Clear completed</button>
+				<button class="clear-completed" c:onclick="m().removeCompletedItems()" c:if="m().todos.length - m().remaining > 0">Clear completed</button>
 			</footer>
 		</section>
 	</template>

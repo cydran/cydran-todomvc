@@ -46,11 +46,9 @@ window.onload = () => {
 			this.remaining = 0;
 			this.togAllDoneOrNot = false;
 			this.newTodoValue = "";
-			this.completedCount = 0;
 
 			this.watch("m().todos", () => {
 				this.remaining = this.todos.filter(t => !t.completed).length;
-				this.completedCount = this.todos.length - this.remaining;
 				this.repo.storeAll(this.todos);
 			});
 
@@ -78,18 +76,6 @@ window.onload = () => {
 
 		removeCompletedItems() {
 			this.todos = this.todos.filter(item => !item.completed);
-		}
-
-		completedCount() {
-			let retval = 0;
-
-			for (const t in this.todos) {
-				if (t.completed) {
-					++retval;
-				}
-			}
-
-			return retval;
 		}
 
 		toggleAll() {
