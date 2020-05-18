@@ -8,10 +8,12 @@ const visibilityState = "visibility";
 const template = (id) => document.querySelector("template[id=" + id + "]").innerHTML.trim();
 
 class TodoItem {
+
 	constructor() {
 		this.title = null;
 		this.completed = false;
 	}
+
 }
 
 class TodoRepo {
