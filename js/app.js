@@ -78,10 +78,7 @@ class App extends Component {
 	}
 
 	toggleAll() {
-		this.todos.forEach(todo => {
-			todo.completed = !this.togAllDoneOrNot;
-		});
-
+		this.todos.forEach(todo => todo.completed = !this.togAllDoneOrNot);
 		this.togAllDoneOrNot = !this.togAllDoneOrNot;
 	}
 }
