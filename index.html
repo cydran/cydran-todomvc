@@ -1,6 +1,5 @@
 <!doctype html>
 <html>
-
 	<head>
 		<meta charset="utf-8">
 		<title>Cydran • TodoMVC</title>
@@ -11,7 +10,6 @@
 		<script src="node_modules/cydran/dist/cydran.min.js" type="application/javascript"></script>
 		<script src="js/app.js" type="application/javascript"></script>
 	</head>
-
 	<body>
 		<div id="appbody"></div>
 		<footer class="info">
@@ -20,7 +18,6 @@
 			<p>Part of <a target="_new" href="http://todomvc.com">TodoMVC</a></p>
 		</footer>
 	</body>
-
 	<template id="app">
 		<section class="todoapp">
 			<header class="header">
@@ -41,17 +38,14 @@
 					<strong>{{m().remaining}}</strong> {{pluralize('item', m().remaining)}} left
 				</span>
 				<ul class="filters">
-					<li><a c:onclick="m().setFilter('all')" c:class="{'selected': m().filterVisiblity == 'all'}">All</a></li>
-					<li><a c:onclick="m().setFilter('active')" c:class="{'selected': m().filterVisiblity == 'active'}">Active</a></li>
-					<li><a c:onclick="m().setFilter('completed')" c:class="{'selected': m().filterVisiblity == 'completed'}">Completed</a></li>
+					<li><a c:onclick="m().filterVisiblity = 'all'" c:class="{'selected': m().filterVisiblity == 'all'}">All</a></li>
+					<li><a c:onclick="m().filterVisiblity = 'active'" c:class="{'selected': m().filterVisiblity == 'active'}">Active</a></li>
+					<li><a c:onclick="m().filterVisiblity = 'completed'" c:class="{'selected': m().filterVisiblity == 'completed'}">Completed</a></li>
 				</ul>
-				<button class="clear-completed" c:onclick="m().removeCompletedItems()" c:if="m().completedCount > 0">
-					Clear completed
-				</button>
+				<button class="clear-completed" c:onclick="m().removeCompletedItems()" c:if="m().completedCount > 0">Clear completed</button>
 			</footer>
 		</section>
 	</template>
-
 	<template id="todoitem">
 		<li class="todo" c:class="{'completed': v().completed, 'editing': m().inEditMode}">
 			<div class="view">
@@ -62,5 +56,4 @@
 			<input class="edit" type="text" c:model="v().title" c:onkeyup="m().finishEdit(event)" c:onblur="m().doneEdit()" c:force-focus="m().inEditMode">
 		</li>
 	</template>
-
 </html>

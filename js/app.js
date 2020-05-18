@@ -59,18 +59,12 @@ window.onload = () => {
 			});
 		}
 
-		setFilter(filter) {
-			this.filterVisiblity = filter;
-			this.getLogger().ifDebug(() => "filter set to " + this.filterVisiblity);
-		}
-
 		addTodo(event) {
 			if (event.keyCode == KEY_ENTER) {
 				let newTodo = new TodoItem();
 				newTodo.title = this.newTodoValue;
 				event.target.value = "";
 				this.todos.push(newTodo);
-				this.getLogger().ifDebug(() => "new todo added: " + JSON.stringify(newTodo));
 			}
 		}
 
@@ -79,15 +73,11 @@ window.onload = () => {
 
 			if (removeIdx > -1) {
 				this.todos.splice(removeIdx, 1);
-				this.getLogger().ifDebug(() => "todo item removed: " + JSON.stringify(todo));
 			}
 		}
 
 		removeCompletedItems() {
-			if (this.todos) {
-				const remaining = this.todos.filter(item => !item.completed);
-				this.todos = remaining;
-			}
+			this.todos = this.todos.filter(item => !item.completed);
 		}
 
 		completedCount() {
@@ -126,20 +116,16 @@ window.onload = () => {
 		edit() {
 			this.inEditMode = true;
 			this.origEditText = this.getValue().title;
-			this.getLogger().ifDebug(() => "begin edit of todo: " + JSON.stringify(this.getValue()));
 		}
 
 		cancelEdit() {
 			this.getValue().title = this.origEditText;
-			this.origEditText = "";
-			this.inEditMode = false;
-			this.getLogger().ifDebug(() => "cancel edit of todo: " + JSON.stringify(this.getValue()));
+			this.doneEdit();
 		}
 
 		doneEdit() {
 			this.origEditText = "";
 			this.inEditMode = false;
-			this.getLogger().ifDebug(() => "finish edit of todo: " + JSON.stringify(this.getValue()));
 		}
 
 		finishEdit(event) {
@@ -159,7 +145,7 @@ window.onload = () => {
 	}
 
 	builder("body>div#appbody")
-		.withDebugLogging()
+		.withInfoLogging()
 		.withScopeItem("pluralize", (str, cnt) => (cnt != 1 ? str + "s" : str))
 		.withPrototype(App.name, App)
 		.withPrototype(Todo.name, Todo)
