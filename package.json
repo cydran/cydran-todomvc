@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/cydran/cydran-todomvc#readme",
   "dependencies": {
-    "cydran": "^0.1.15",
+    "cydran": "0.1.16",
     "todomvc-app-css": "2.3.0",
     "todomvc-common": "1.0.5"
   },
