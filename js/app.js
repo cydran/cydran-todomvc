@@ -1,6 +1,7 @@
 const builder = cydran.builder;
 const Component = cydran.Component;
-const filterBuilder = cydran.filterBuilder;
+const Filters = cydran.Filters;
+
 const KEY_ENTER = 13;
 const KEY_ESC = 27;
 const todoList = "todolist";
@@ -41,7 +42,7 @@ class App extends Component {
 		this.repo = new TodoRepo();
 		this.todos = this.repo.getAll();
 		this.filterVisiblity = this.repo.getVisibleState();
-		this.filtered = filterBuilder(this, "m().todos")
+		this.filtered = Filters.builder(this, "m().todos")
 			.withPredicate("(p(0) === 'all') || (!v().completed && p(0) === 'active') || (v().completed && p(0) === 'completed')", "m().filterVisiblity")
 			.build();
 		this.remaining = 0;
