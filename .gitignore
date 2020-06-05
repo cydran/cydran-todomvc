@@ -4,4 +4,5 @@ dist/
 *-lock.json
 node_modules/*
 .cache/*
-/node_modules/
+node_modules/*
+nbproject/*
