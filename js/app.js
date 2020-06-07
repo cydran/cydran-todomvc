@@ -9,28 +9,22 @@ const visibilityState = "visibility";
 const template = (id) => document.querySelector("template[id=" + id + "]").innerHTML.trim();
 
 class TodoItem {
-
 	constructor() {
 		this.title = null;
 		this.completed = false;
 	}
-
 }
 
 class TodoRepo {
-
 	storeAll(todos) {
 		window.localStorage.setItem(todoList, JSON.stringify(todos));
 	}
-
 	getAll() {
 		return JSON.parse(window.localStorage.getItem(todoList)) || [];
 	}
-
 	storeVisibleState(state) {
 		window.localStorage.setItem(visibilityState, state);
 	}
-
 	getVisibleState() {
 		return window.localStorage.getItem(visibilityState) || "all";
 	}
