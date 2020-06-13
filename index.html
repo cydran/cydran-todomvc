@@ -22,7 +22,7 @@
 		<section class="todoapp">
 			<header class="header">
 				<h1>todos</h1>
-				<input class="new-todo" autofocus="true" autocomplete="off" placeholder="What needs to be done?" c:onkeyup="m().addTodo(event)" c:model="m().newTodoValue">
+				<input class="new-todo" autofocus="true" autocomplete="off" placeholder="What needs to be done?" c:onkeyup="m().addTodo($event)" c:model="m().newTodoValue">
 			</header>
 			<section class="main" c:if="m().todos.length > 0">
 				<input id="toggle-all" class="toggle-all" type="checkbox" c:onclick="m().toggleAll()">
@@ -53,7 +53,7 @@
 				<label c:ondblclick="m().edit()">{{v().title}}</label>
 				<button class="destroy" c:onclick="m().kill()"></button>
 			</div>
-			<input class="edit" type="text" c:model="v().title" c:onkeyup="m().finishEdit(event)" c:onblur="m().doneEdit()" c:force-focus="m().inEditMode">
+			<input class="edit" type="text" c:model="v().title" c:onkeyup="m().finishEdit($event)" c:onblur="m().doneEdit()" c:force-focus="m().inEditMode">
 		</li>
 	</template>
 </html>

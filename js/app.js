@@ -62,7 +62,6 @@ class App extends Component {
 
 	removeTodo(todo) {
 		const removeIdx = this.todos.indexOf(todo);
-
 		if (removeIdx > -1) {
 			this.todos.splice(removeIdx, 1);
 		}
