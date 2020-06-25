@@ -1,0 +1,6 @@
+.editorconfig
+.jshintrc
+.settings/**
+.cache/**
+nbproject/**
+.project
