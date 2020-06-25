@@ -29,7 +29,7 @@
 				<label for="toggle-all">Mark all as complete</label>
 				<ul class="todo-list" c:repeat="m().filtered.items()" c:repeat:mode="generated">
 					<template type="item">
-						<c:component name="Todo"></c:component>
+						<c:region component="Todo"></c:region>
 					</template>
 				</ul>
 			</section>
