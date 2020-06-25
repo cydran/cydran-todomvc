@@ -1,6 +1,6 @@
 {
   "name": "cydran-todomvc",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "TodoMVC implementation with Cydran MVVM framework",
   "main": "index.js",
   "scripts": {
