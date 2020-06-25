@@ -1,7 +1,6 @@
 .project
 .settings/
 dist/
-*-lock.json
 node_modules/*
 .cache/*
 node_modules/*
