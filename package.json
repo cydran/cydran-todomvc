@@ -4,7 +4,7 @@
   "description": "TodoMVC implementation with Cydran MVVM framework",
   "main": "index.js",
   "scripts": {
-    "test": ""
+    "test": "echo 'No tests available yet..."
   },
   "keywords": [
     "todomvc",
