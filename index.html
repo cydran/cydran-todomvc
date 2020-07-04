@@ -27,7 +27,7 @@
 			<section class="main" c:if="m().todos.length > 0">
 				<input id="toggle-all" class="toggle-all" type="checkbox" c:onclick="m().toggleAll()">
 				<label for="toggle-all">Mark all as complete</label>
-				<ul class="todo-list" c:repeat="m().filtered.items()" c:repeat:mode="generated">
+				<ul class="todo-list" c:each="m().filtered.items()" c:each:mode="generated">
 					<template type="item" component="Todo"></template>
 				</ul>
 			</section>
