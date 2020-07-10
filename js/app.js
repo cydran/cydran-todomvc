@@ -35,6 +35,9 @@ class TodoRepo {
 class App extends Component {
 	constructor(who) {
 		super(template("app"));
+
+		this.who = who || "";
+
 		this.repo = new TodoRepo();
 		this.todos = this.repo.getAll();
 		this.filterVisiblity = this.repo.getVisibleState();
