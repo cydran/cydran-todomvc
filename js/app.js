@@ -125,6 +125,8 @@ builder("body>div#appbody")
 	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? str + "s" : str))
 	.withPrototype(App.name, App)
 	.withPrototype(Todo.name, Todo)
-	.withInitializer(stage => stage.setComponentFromRegistry(App.name))
+	.withInitializer(stage => {
+		stage.setComponentFromRegistry(App.name);
+	})
 	.build()
 	.start();
