@@ -122,7 +122,7 @@ class Todo extends Component {
 
 builder("body>div#appbody")
 	.withInfoLogging()
-	.withScopeItem("pluralize", (str, cnt) => (cnt != 1 ? str + "s" : str))
+	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? str + "s" : str))
 	.withPrototype(App.name, App)
 	.withPrototype(Todo.name, Todo)
 	.withInitializer(stage => stage.setComponentFromRegistry(App.name))
