@@ -2,6 +2,8 @@ const builder = cydran.builder;
 const Component = cydran.Component;
 const Filters = cydran.Filters;
 
+import PROPERTIES from "../todo_properties.js";
+
 const KEY_ENTER = 13;
 const KEY_ESC = 27;
 const todoList = "todolist";
@@ -31,7 +33,7 @@ class TodoRepo {
 }
 
 class App extends Component {
-	constructor() {
+	constructor(who) {
 		super(template("app"));
 		this.repo = new TodoRepo();
 		this.todos = this.repo.getAll();
@@ -123,9 +125,11 @@ class Todo extends Component {
 builder("body>div#appbody")
 	.withInfoLogging()
 	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? str + "s" : str))
-	.withPrototype(App.name, App)
+	.withProperties(PROPERTIES)
+	.withPrototype(App.name, App, ["$prop:todo.person"])
 	.withPrototype(Todo.name, Todo)
 	.withInitializer(stage => {
+		console.log("%o", PROPERTIES);
 		stage.setComponentFromRegistry(App.name);
 	})
 	.build()
