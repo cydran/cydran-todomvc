@@ -123,7 +123,7 @@ class Todo extends Component {
 }
 
 builder("body>div#appbody")
-	.withInfoLogging()
+	.withDebugLogging()
 	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? str + "s" : str))
 	.withProperties(PROPERTIES)
 	.withPrototype(App.name, App, ["$prop:todo.person"])
