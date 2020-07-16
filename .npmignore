@@ -4,3 +4,5 @@
 .cache/**
 nbproject/**
 .project
+node_modules/
+tarball.sh
