@@ -2,7 +2,11 @@ const builder = cydran.builder;
 const Component = cydran.Component;
 const Filters = cydran.Filters;
 
-import PROPERTIES from "../todo_properties.js";
+//import PROPERTIES from "../todo_properties.js";
+const PROPERTIES = {
+	"cydran.development.enabled": true
+		//"todo.person": "bubba"
+};
 
 const KEY_ENTER = 13;
 const KEY_ESC = 27;
