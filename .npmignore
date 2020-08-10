@@ -6,3 +6,5 @@ nbproject/**
 .project
 node_modules/
 tarball.sh
+*.tgz
+*.tar.gz
