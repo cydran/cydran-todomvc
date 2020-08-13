@@ -42,7 +42,7 @@ class App extends Component {
 
 		this.who = who || "";
 
-		this.repo = new TodoRepo();
+		this.repo = this.get(TodoRepo.name);
 		this.todos = this.repo.getAll();
 		this.filterVisiblity = this.repo.getVisibleState();
 		this.filtered = Filters.builder(this, "m().todos")
@@ -133,6 +133,7 @@ builder("body>div#appbody")
 	.withDebugLogging()
 	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? str + "s" : str))
 	.withProperties(PROPERTIES)
+	.withSingleton(TodoRepo.name, TodoRepo)
 	.withPrototype(App.name, App, ["$prop:todo.person"])
 	.withPrototype(Todo.name, Todo)
 	.withInitializer(stage => {
