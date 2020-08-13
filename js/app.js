@@ -136,7 +136,6 @@ builder("body>div#appbody")
 	.withPrototype(App.name, App, ["$prop:todo.person"])
 	.withPrototype(Todo.name, Todo)
 	.withInitializer(stage => {
-		console.log("%o", PROPERTIES);
 		stage.setComponentFromRegistry(App.name);
 	})
 	.build()
