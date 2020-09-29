@@ -4,7 +4,7 @@ const Filters = cydran.Filters;
 
 //import PROPERTIES from "../todo_properties.js";
 const PROPERTIES = {
-	"cydran.development.enabled": true
+	"cydran.production.enabled": false
 		//"todo.person": "bubba"
 };
 
