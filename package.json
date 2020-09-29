@@ -4,7 +4,7 @@
   "description": "TodoMVC implementation with Cydran MVVM framework",
   "main": "index.js",
   "scripts": {
-    "test": "echo 'No tests available yet...",
+    "test": "No tests yet configured...\n\n; exit 0",
     "clean": "rm -f *.tgz *.tar.gz"
   },
   "keywords": [
