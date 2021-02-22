@@ -47,11 +47,11 @@
 	<template id="todoitem">
 		<li class="todo" c:class="{'completed': v().completed, 'editing': m().inEditMode}">
 			<div class="view">
-				<input class="toggle" type="checkbox" c:onclick="m().isComplete()" c:checked="!v().completed">
+				<input class="toggle" type="checkbox" c:onclick="m().isComplete()" c:checked="v().completed" />
 				<label c:ondblclick="m().edit()">{{v().title}}</label>
 				<button class="destroy" c:onclick="m().kill()"></button>
 			</div>
-			<input class="edit" type="text" c:model="v().title" c:onkeyup="m().finishEdit($event)" c:onblur="m().doneEdit()" c:force-focus="m().inEditMode">
+			<input class="edit" type="text" c:model="v().title" c:onkeyup="m().finishEdit($event)" c:onblur="m().doneEdit()" c:force-focus="m().inEditMode" />
 		</li>
 	</template>
 </html>
