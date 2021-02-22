@@ -12,7 +12,7 @@ const KEY_ENTER = 13;
 const KEY_ESC = 27;
 const todoList = "todolist";
 const visibilityState = "visibility";
-const template = (id) => document.querySelector("template[id=" + id + "]").innerHTML.trim();
+const template = (id) => document.querySelector(`template[id=${ id }]`).innerHTML.trim();
 
 class TodoItem {
 	constructor() {
