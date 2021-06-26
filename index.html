@@ -21,7 +21,7 @@
 	<template id="app">
 		<section class="todoapp">
 			<header class="header">
-				<h1><span c:if="m().who.length > 0">{{m().who}}&nbsp;</span>todos</h1>
+				<h1><span c:if="m().who.length > 0">[[m().who]]&nbsp;</span>todos</h1>
 				<input class="new-todo" autofocus="true" autocomplete="off" placeholder="What needs to be done?" c:onkeyup="m().addTodo($event)" c:model="m().newTodoValue">
 			</header>
 			<section class="main" c:if="m().todos.length > 0">
