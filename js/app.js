@@ -3,10 +3,9 @@ const builder = cydran.builder;
 const Component = cydran.Component;
 const Filters = cydran.Filters;
 
-//import PROPERTIES from "../todo_properties.js";
 const PROPERTIES = {
 	"cydran.production.enabled": false
-		//"todo.person": "bubba"
+	//"todo.person": "Person"
 };
 
 const KEY_ENTER = 13;
@@ -39,7 +38,7 @@ class TodoRepo {
 
 class App extends Component {
 	constructor(who) {
-		super(template("app"));
+		super(template(App.name.toLowerCase()));
 
 		this.who = who || "";
 
@@ -47,7 +46,7 @@ class App extends Component {
 		this.todos = this.repo.getAll();
 		this.filterVisiblity = this.repo.getVisibleState();
 		this.filtered = Filters.builder(this, "m().todos")
-			.withPredicate("(p(0) === 'all') || (!v().completed && p(0) === 'active') || (v().completed && p(0) === 'completed')", "m().filterVisiblity")
+			.withPredicate("p(0) === 'all' || !v().completed && p(0) === 'active' || v().completed && p(0) === 'completed'", "m().filterVisiblity")
 			.build();
 		this.remaining = 0;
 		this.togAllDoneOrNot = false;
@@ -63,7 +62,7 @@ class App extends Component {
 
 	addTodo(event) {
 		if (event.keyCode == KEY_ENTER) {
-			let newTodo = new TodoItem();
+			let newTodo = new TodoListItem();
 			newTodo.title = this.newTodoValue;
 			event.target.value = "";
 			this.todos.push(newTodo);

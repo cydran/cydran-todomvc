@@ -28,7 +28,7 @@
 				<input id="toggle-all" class="toggle-all" type="checkbox" c:onclick="m().toggleAll()">
 				<label for="toggle-all">Mark all as complete</label>
 				<ul class="todo-list" c:each="m().filtered.items()" c:each:mode="generated">
-					<template c:type="item" c:component="Todo"></template>
+					<template c:type="item" c:component="TodoItem"></template>
 				</ul>
 			</section>
 			<footer class="footer" c:if="m().todos.length > 0">
@@ -47,7 +47,7 @@
 	<template id="todoitem">
 		<li class="todo" c:class="{'completed': v().completed, 'editing': m().inEditMode}">
 			<div class="view">
-				<input class="toggle" type="checkbox" c:onclick="m().isComplete()" c:checked="v().completed" />
+				<input class="toggle" type="checkbox" c:onclick="m().isComplete()" c:checked="!v().completed" />
 				<label c:ondblclick="m().edit()">{{v().title}}</label>
 				<button class="destroy" c:onclick="m().kill()"></button>
 			</div>
