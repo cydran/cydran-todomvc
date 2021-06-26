@@ -1,3 +1,4 @@
+const args = cydran.argumentsBuilder;
 const builder = cydran.builder;
 const Component = cydran.Component;
 const Filters = cydran.Filters;
@@ -14,7 +15,7 @@ const todoList = "todolist";
 const visibilityState = "visibility";
 const template = (id) => document.querySelector(`template[id=${ id }]`).innerHTML.trim();
 
-class TodoItem {
+class TodoListItem {
 	constructor() {
 		this.title = null;
 		this.completed = false;
@@ -86,10 +87,9 @@ class App extends Component {
 	}
 }
 
-class Todo extends Component {
-
+class TodoItem extends Component {
 	constructor() {
-		super(template("todoitem"));
+		super(template(TodoItem.name.toLowerCase()));
 		this.inEditMode = false;
 		this.origEditText = "";
 	}
@@ -134,8 +134,8 @@ builder("body>div#appbody")
 	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? str + "s" : str))
 	.withProperties(PROPERTIES)
 	.withSingleton(TodoRepo.name, TodoRepo)
-	.withPrototype(App.name, App, ["$prop:todo.person"])
-	.withPrototype(Todo.name, Todo)
+	.withPrototype(App.name, App, args().withProperty("todo.person").build())
+	.withPrototype(TodoItem.name, TodoItem)
 	.withInitializer(stage => {
 		stage.setComponentFromRegistry(App.name);
 	})
