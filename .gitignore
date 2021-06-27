@@ -8,3 +8,4 @@ nbproject/*
 *.swp
 *.tgz
 startup_times.txt
+public/

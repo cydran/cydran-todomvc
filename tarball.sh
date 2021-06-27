@@ -1,1 +1,5 @@
-tar czfvm cydran-todomvc.tgz css index.html js learn.json LICENSE node_modules node_modules/cydran/dist/cydran.* README.md
+tar czfm cydran-todomvc.tgz css index.html js learn.json LICENSE README.md node_modules/todomvc* node_modules/cydran/dist/cydran.*;
+
+mkdir public;
+
+tar zxf cydran-todomvc.tgz -C ./public;
