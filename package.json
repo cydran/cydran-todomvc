@@ -28,5 +28,8 @@
     "cydran",
     "todomvc-app-css",
     "todomvc-common"
-  ]
+  ],
+  "devDependencies": {
+    "http-server": "0.12.3"
+  }
 }
