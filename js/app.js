@@ -4,8 +4,8 @@ const Component = cydran.Component;
 const Filters = cydran.Filters;
 
 const PROPERTIES = {
-	"cydran.production.enabled": false
-	//"todo.person": "Person"
+	"cydran.production.enabled": false,
+	"todo.person": "Person"
 };
 
 const KEY_ENTER = 13;
