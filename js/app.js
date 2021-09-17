@@ -58,6 +58,7 @@ class App extends Component {
 		});
 
 		this.watch("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
+		this.on("removeTodo").forChannel("TODOS").invoke(this.removeTodo);
 	}
 
 	addTodo(event) {
@@ -66,6 +67,7 @@ class App extends Component {
 			newTodo.title = this.newTodoValue;
 			event.target.value = "";
 			this.todos.push(newTodo);
+			this.getLogger().ifDebug(() => `Adding todo item: ${ JSON.stringify(newTodo) }`);
 		}
 	}
 
@@ -73,6 +75,7 @@ class App extends Component {
 		const removeIdx = this.todos.indexOf(todo);
 		if (removeIdx > -1) {
 			this.todos.splice(removeIdx, 1);
+			this.getLogger().ifDebug(() => `Dumping todo item: ${ JSON.stringify(todo) }`);
 		}
 	}
 
@@ -94,7 +97,7 @@ class TodoItem extends Component {
 	}
 
 	kill() {
-		this.getParent().removeTodo(this.getValue());
+		this.broadcast("TODOS", "removeTodo", this.getValue());
 	}
 
 	edit() {
@@ -130,10 +133,12 @@ class TodoItem extends Component {
 
 builder("body>div#appbody")
 	.withDebugLogging()
-	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? str + "s" : str))
+//	.withTraceLogging()
+	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? `${ str }s` : str))
 	.withProperties(PROPERTIES)
 	.withSingleton(TodoRepo.name, TodoRepo)
-	.withPrototype(App.name, App, args().withProperty("todo.person").build())
+	//args().withProperty("todo.person").build()
+	.withPrototype(App.name, App)
 	.withPrototype(TodoItem.name, TodoItem)
 	.withInitializer(stage => {
 		stage.setComponentFromRegistry(App.name);
