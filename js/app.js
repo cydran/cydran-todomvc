@@ -129,11 +129,26 @@ class TodoItem extends Component {
 	isComplete() {
 		this.getValue().completed = !this.getValue().completed;
 	}
+
+	onMount() {
+		this.stateLog("mounted");
+	}
+
+	onUnmount() {
+		this.stateLog("unmounted");
+	}
+
+	onRemount() {
+		this.stateLog("remounted");
+	}
+
+	stateLog(action) {
+		this.getLogger().ifDebug(() => `${ this.constructor.name } - [${ this.getId() }] - ${ action }`);
+	}
 }
 
 builder("body>div#appbody")
 	.withDebugLogging()
-//	.withTraceLogging()
 	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? `${ str }s` : str))
 	.withProperties(PROPERTIES)
 	.withSingleton(TodoRepo.name, TodoRepo)
