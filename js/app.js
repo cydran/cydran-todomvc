@@ -5,7 +5,7 @@ const Filters = cydran.Filters;
 
 const PROPERTIES = {
 	"cydran.production.enabled": false,
-	"todo.person": "Person"
+	"todo.person": ""
 };
 
 const KEY_ENTER = 13;
@@ -152,8 +152,7 @@ builder("body>div#appbody")
 	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? `${ str }s` : str))
 	.withProperties(PROPERTIES)
 	.withSingleton(TodoRepo.name, TodoRepo)
-	//args().withProperty("todo.person").build()
-	.withPrototype(App.name, App)
+	.withPrototype(App.name, App, args().withProperty("todo.person").build())
 	.withPrototype(TodoItem.name, TodoItem)
 	.withInitializer(stage => {
 		stage.setComponentFromRegistry(App.name);
