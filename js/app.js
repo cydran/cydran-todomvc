@@ -53,12 +53,20 @@ class App extends Component {
 		this.newTodoValue = "";
 
 		this.watch("m().todos", () => {
-			this.remaining = this.todos.filter(t => !t.completed).length;
+			this.computeRemaining();
 			this.repo.storeAll(this.todos);
 		});
 
 		this.watch("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
 		this.on("removeTodo").forChannel("TODOS").invoke(this.removeTodo);
+	}
+
+	onMount() {
+		this.computeRemaining();
+	}
+
+	computeRemaining() {
+		this.remaining = this.todos.filter(t => !t.completed).length;
 	}
 
 	addTodo(event) {
@@ -128,18 +136,6 @@ class TodoItem extends Component {
 
 	isComplete() {
 		this.getValue().completed = !this.getValue().completed;
-	}
-
-	onMount() {
-		this.stateLog("*** mounted");
-	}
-
-	onUnmount() {
-		this.stateLog("*** unmounted");
-	}
-
-	onRemount() {
-		this.stateLog("*** remounted");
 	}
 
 	stateLog(action) {
