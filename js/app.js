@@ -131,15 +131,15 @@ class TodoItem extends Component {
 	}
 
 	onMount() {
-		this.stateLog("mounted");
+		this.stateLog("*** mounted");
 	}
 
 	onUnmount() {
-		this.stateLog("unmounted");
+		this.stateLog("*** unmounted");
 	}
 
 	onRemount() {
-		this.stateLog("remounted");
+		this.stateLog("*** remounted");
 	}
 
 	stateLog(action) {
