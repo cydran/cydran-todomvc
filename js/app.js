@@ -5,6 +5,7 @@ const Filters = cydran.Filters;
 
 const PROPERTIES = {
 	"cydran.production.enabled": false,
+	"cydran.logging.level": "debug",
 	"todo.person": ""
 };
 
@@ -144,7 +145,6 @@ class TodoItem extends Component {
 }
 
 builder("body>div#appbody")
-	.withDebugLogging()
 	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? `${ str }s` : str))
 	.withProperties(PROPERTIES)
 	.withSingleton(TodoRepo.name, TodoRepo)
