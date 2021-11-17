@@ -92,11 +92,13 @@ class App extends Component {
 
 	removeCompletedItems() {
 		this.todos = this.todos.filter(item => !item.completed);
+		this.getLogger().ifDebug(() => `Removed completed items`);
 	}
 
 	toggleAll() {
 		this.todos.forEach(todo => todo.completed = !this.togAllDoneOrNot);
 		this.togAllDoneOrNot = !this.togAllDoneOrNot;
+		this.getLogger().ifDebug(() => `Toggled all items`);
 	}
 }
 
@@ -130,6 +132,7 @@ class TodoItem extends Component {
 		switch (event.keyCode) {
 			case KEY_ENTER:
 				event.target.blur();
+				this.getLogger().ifDebug(() => `New text of todo: ${ this.getValue().title }`);
 				break;
 			case KEY_ESC:
 				this.cancelEdit();
