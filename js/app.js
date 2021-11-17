@@ -5,9 +5,7 @@ const Filters = cydran.Filters;
 
 const PROPERTIES = {
 	"cydran.production.enabled": false,
-	"cydran.logging.level": "debug",
 	"cydran.production.startphrase": "Let it ride! Baby needs new shoes!",
-	"cydran.logging.color.info": "#d4fb78",
 	"todo.person": ""
 };
 
