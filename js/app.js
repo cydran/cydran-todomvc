@@ -148,8 +148,8 @@ class TodoItem extends Component {
 }
 
 builder("body>div#appbody")
-	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? `${ str }s` : str))
 	.withProperties(PROPERTIES)
+	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? `${ str }s` : str))
 	.withSingleton(TodoRepo.name, TodoRepo)
 	.withPrototype(App.name, App, args().withProperty("todo.person").build())
 	.withPrototype(TodoItem.name, TodoItem)
