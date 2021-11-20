@@ -6,6 +6,8 @@ const Filters = cydran.Filters;
 const PROPERTIES = {
 	"cydran.production.enabled": false,
 	"cydran.production.startphrase": "Let it ride! Baby needs new shoes!",
+	"cydran.development.startphrase": "Deleted code is debugged code. (Jeff Sickel)",
+	"cydran.logging.color.info": "#d4fb78",
 	"todo.person": ""
 };
 
@@ -64,6 +66,7 @@ class App extends Component {
 
 	onMount() {
 		this.computeRemaining();
+		this.getLogger().ifDebug(() => `Cydran keys: ${ JSON.stringify(this.getProperties().keyFamilyPrepertyNames('cydran.',), null, 2) }`);
 	}
 
 	computeRemaining() {
