@@ -15,6 +15,8 @@ const KEY_ENTER = 13;
 const KEY_ESC = 27;
 const todoList = "todolist";
 const visibilityState = "visibility";
+const TODO_CHANNEL = "TODOS";
+const RMV_TODO = "removeTodo";
 const template = (id) => document.querySelector(`template[id=${ id }]`).innerHTML.trim();
 
 class TodoListItem {
@@ -61,7 +63,7 @@ class App extends Component {
 		});
 
 		this.watch("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
-		this.on("removeTodo").forChannel("TODOS").invoke(this.removeTodo);
+		this.on(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
 	}
 
 	onMount() {
@@ -75,7 +77,7 @@ class App extends Component {
 
 	addTodo(event) {
 		if (event.keyCode == KEY_ENTER) {
-			let newTodo = new TodoListItem();
+			const newTodo = new TodoListItem();
 			newTodo.title = this.newTodoValue;
 			event.target.value = "";
 			this.todos.push(newTodo);
@@ -111,7 +113,7 @@ class TodoItem extends Component {
 	}
 
 	kill() {
-		this.broadcast("TODOS", "removeTodo", this.getValue());
+		this.broadcast(TODO_CHANNEL, RMV_TODO, this.getValue());
 	}
 
 	edit() {
