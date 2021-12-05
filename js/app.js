@@ -149,10 +149,6 @@ class TodoItem extends Component {
 	isComplete() {
 		this.getValue().completed = !this.getValue().completed;
 	}
-
-	stateLog(action) {
-		this.getLogger().ifDebug(() => `${ this.constructor.name } - [${ this.getId() }] - ${ action }`);
-	}
 }
 
 builder("body>div#appbody")
