@@ -69,7 +69,9 @@ class App extends Component {
 
 	onMount() {
 		this.computeRemaining();
-		this.getLogger().ifDebug(() => `Cydran keys: ${ JSON.stringify(this.getProperties().keyFamilyPropertyNames('cydran.',), null, 2) }`);
+		const keyFam = "cydran.";
+		const keyGrp = this.getProperties().keyFamilyPropertyNames(keyFam);
+		this.getLogger().ifDebug(() => `onMount "${ keyFam }" key group: ${ JSON.stringify(keyGrp, null, 2) }`);
 	}
 
 	computeRemaining() {
