@@ -6,7 +6,7 @@ const Filters = cydran.Filters;
 const PROPERTIES = {
 	"cydran.production.enabled": false,
 	"cydran.production.startphrase": "Let it ride! Baby needs new shoes!",
-	"cydran.development.startphrase": "Deleted code is debugged code. (Jeff Sickel)",
+	"cydran.development.startphrase": "Any fool can write code that a computer can understand. Good programmers write code that humans can understand. (Martin Fowler)",
 	"cydran.logging.color.info": "#d4fb78",
 	"todo.person": ""
 };
