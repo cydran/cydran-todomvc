@@ -7,7 +7,8 @@ const PROPERTIES = {
 	"cydran.production.enabled": false,
 	"cydran.production.startphrase": "Let it ride! Baby needs new shoes!",
 	"cydran.development.startphrase": "Any fool can write code that a computer can understand. Good programmers write code that humans can understand. (Martin Fowler)",
-	"cydran.logging.color.info": "#d4fb78",
+	//"cydran.logging.color.info": "#d4fb78",
+	"cydran.logging.level": "debug",
 	"todo.person": ""
 };
 
