@@ -84,7 +84,7 @@ class App extends Component {
 			newTodo.title = this.newTodoValue;
 			event.target.value = "";
 			this.todos.push(newTodo);
-			this.getLogger().ifDebug(() => `Adding todo item: ${ JSON.stringify(newTodo) }`);
+			this.getLogger().ifDebug(() => `Created todo item: ${ JSON.stringify(newTodo) }`);
 		}
 	}
 
@@ -92,7 +92,7 @@ class App extends Component {
 		const removeIdx = this.todos.indexOf(todo);
 		if (removeIdx > -1) {
 			this.todos.splice(removeIdx, 1);
-			this.getLogger().ifDebug(() => `Dumping todo item: ${ JSON.stringify(todo) }`);
+			this.getLogger().ifDebug(() => `Removed todo item: ${ JSON.stringify(todo) }`);
 		}
 	}
 
