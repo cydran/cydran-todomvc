@@ -7,7 +7,7 @@ const PROPERTIES = {
 	"cydran.production.enabled": false,
 	"cydran.production.startphrase": "Let it ride! Baby needs new shoes!",
 	"cydran.development.startphrase": "Any fool can write code that a computer can understand. Good programmers write code that humans can understand. (Martin Fowler)",
-	//"cydran.logging.color.info": "#d4fb78",
+	"cydran.logging.color.debug": "#00f900",
 	"cydran.logging.level": "debug",
 	"todo.person": ""
 };
@@ -65,13 +65,13 @@ class App extends Component {
 
 		this.watch("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
 		this.on(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
+		this.computeRemaining();
 	}
 
 	onMount() {
-		this.computeRemaining();
 		const keyFam = "cydran.";
 		const keyGrp = this.getProperties().keyFamilyPropertyNames(keyFam);
-		this.getLogger().ifDebug(() => `onMount "${ keyFam }" key group: ${ JSON.stringify(keyGrp, null, 2) }`);
+		this.getLogger().ifDebug(() => `onMount "${ keyFam }" key group: ${ JSON.stringify(keyGrp, null, 3) }`);
 	}
 
 	computeRemaining() {
@@ -151,8 +151,7 @@ class TodoItem extends Component {
 	}
 }
 
-builder("body>div#appbody")
-	.withProperties(PROPERTIES)
+builder("body>div#appbody", PROPERTIES)
 	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? `${ str }s` : str))
 	.withSingleton(TodoRepo.name, TodoRepo)
 	.withPrototype(App.name, App, args().withProperty("todo.person").build())
