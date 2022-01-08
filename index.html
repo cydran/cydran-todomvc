@@ -21,37 +21,37 @@
 	<template id="app">
 		<section class="todoapp">
 			<header class="header">
-				<h1><span c:if="m().who.length > 0">[[m().who]]&nbsp;</span>todos</h1>
-				<input class="new-todo" autofocus="true" autocomplete="off" placeholder="What needs to be done?" c:onkeyup="m().addTodo($event)" c:model="m().newTodoValue">
+				<h1><span c-if="m().who.length > 0">[[m().who]]&nbsp;</span>todos</h1>
+				<input class="new-todo" autofocus="true" autocomplete="off" placeholder="What needs to be done?" c-onkeyup="m().addTodo($event)" c-model="m().newTodoValue">
 			</header>
-			<section class="main" c:if="m().todos.length > 0">
-				<input id="toggle-all" class="toggle-all" type="checkbox" c:onclick="m().toggleAll()">
+			<section class="main" c-if="m().todos.length > 0">
+				<input id="toggle-all" class="toggle-all" type="checkbox" c-onclick="m().toggleAll()">
 				<label for="toggle-all">Mark all as complete</label>
-				<ul class="todo-list" c:each="m().filtered.items()" c:each:mode="generated">
-					<template c:type="item" c:component="TodoItem"></template>
+				<ul class="todo-list" c-each="m().filtered.items()" c-each-mode="generated">
+					<template c-type="item" c-component="TodoItem"></template>
 				</ul>
 			</section>
-			<footer class="footer" c:if="m().todos.length > 0">
+			<footer class="footer" c-if="m().todos.length > 0">
 				<span class="todo-count">
 					<strong>{{m().remaining}}</strong> {{pluralize('item', m().remaining)}} left
 				</span>
 				<ul class="filters">
-					<li><a c:onclick="m().filterVisiblity = 'all'" c:class="{'selected': m().filterVisiblity == 'all'}">All</a></li>
-					<li><a c:onclick="m().filterVisiblity = 'active'" c:class="{'selected': m().filterVisiblity == 'active'}">Active</a></li>
-					<li><a c:onclick="m().filterVisiblity = 'completed'" c:class="{'selected': m().filterVisiblity == 'completed'}">Completed</a></li>
+					<li><a c-onclick="m().filterVisiblity = 'all'" c-class="{'selected': m().filterVisiblity == 'all'}">All</a></li>
+					<li><a c-onclick="m().filterVisiblity = 'active'" c-class="{'selected': m().filterVisiblity == 'active'}">Active</a></li>
+					<li><a c-onclick="m().filterVisiblity = 'completed'" c-class="{'selected': m().filterVisiblity == 'completed'}">Completed</a></li>
 				</ul>
-				<button class="clear-completed" c:onclick="m().removeCompletedItems()" c:if="m().todos.length - m().remaining > 0">Clear completed</button>
+				<button class="clear-completed" c-onclick="m().removeCompletedItems()" c-if="m().todos.length - m().remaining > 0">Clear completed</button>
 			</footer>
 		</section>
 	</template>
 	<template id="todoitem">
-		<li class="todo" c:class="{'completed': v().completed, 'editing': m().inEditMode}">
+		<li class="todo" c-class="{'completed': v().completed, 'editing': m().inEditMode}">
 			<div class="view">
-				<input class="toggle" type="checkbox" c:onclick="m().isComplete()" c:checked="v().completed" />
-				<label c:ondblclick="m().edit()">{{v().title}}</label>
-				<button class="destroy" c:onclick="m().kill()"></button>
+				<input class="toggle" type="checkbox" c-onclick="m().isComplete()" c-checked="v().completed" />
+				<label c-ondblclick="m().edit()">{{v().title}}</label>
+				<button class="destroy" c-onclick="m().kill()"></button>
 			</div>
-			<input class="edit" type="text" c:model="v().title" c:onkeyup="m().finishEdit($event)" c:onblur="m().doneEdit()" c:force-focus="m().inEditMode" />
+			<input class="edit" type="text" c-model="v().title" c-onkeyup="m().finishEdit($event)" c-onblur="m().doneEdit()" c-force-focus="m().inEditMode" />
 		</li>
 	</template>
 </html>
