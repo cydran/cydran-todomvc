@@ -70,7 +70,7 @@ class App extends Component {
 
 	onMount() {
 		const keyFam = "cydran.";
-		const keyGrp = this.getProperties().keyFamilyPropertyNames(keyFam);
+		const keyGrp = this.getProperties().familyGroupKeysFrom(keyFam);
 		this.getLogger().ifDebug(() => `onMount "${ keyFam }" key group: ${ JSON.stringify(keyGrp, null, 3) }`);
 	}
 
@@ -104,7 +104,7 @@ class App extends Component {
 	toggleAll() {
 		this.todos.forEach(todo => todo.completed = !this.togAllDoneOrNot);
 		this.togAllDoneOrNot = !this.togAllDoneOrNot;
-		this.getLogger().ifDebug(() => `Toggled all items`);
+		this.getLogger().ifDebug(() => `all items done: ${this.togAllDoneOrNot}`);
 	}
 }
 
