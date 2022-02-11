@@ -3,13 +3,16 @@ const builder = cydran.builder;
 const Component = cydran.Component;
 const Filters = cydran.Filters;
 
+const PERSONALIZED = "todo.person";
 const PROPERTIES = {
 	"cydran.production.enabled": false,
 	"cydran.production.startphrase": "Let it ride! Baby needs new shoes!",
 	"cydran.development.startphrase": "Any fool can write code that a computer can understand. Good programmers write code that humans can understand. (Martin Fowler)",
 	"cydran.logging.color.debug": "#00f900",
-	"cydran.logging.level": "debug",
-	"todo.person": ""
+	"cydran.logging.level": "info",
+	"cydran.logging.label": "ctdmvc",
+	"cydran.logging.label.visible": false,
+	[PERSONALIZED]: ""
 };
 
 const KEY_ENTER = 13;
@@ -155,6 +158,7 @@ builder("body>div#appbody", PROPERTIES)
 	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? `${ str }s` : str))
 	.withSingleton(TodoRepo.name, TodoRepo)
 	.withPrototype(App.name, App, args().withProperty("todo.person").build())
+	.withPrototype(App.name, App, args().withProperty(PERSONALIZED).withInstanceId(11).build())
 	.withPrototype(TodoItem.name, TodoItem)
 	.withInitializer(stage => {
 		stage.setComponentFromRegistry(App.name);
