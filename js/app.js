@@ -72,9 +72,7 @@ class App extends Component {
 	}
 
 	onMount() {
-		const keyFam = "cydran.";
-		const keyGrp = this.getProperties().familyGroupKeysFrom(keyFam);
-		this.getLogger().ifDebug(() => `onMount "${ keyFam }" key group: ${ JSON.stringify(keyGrp, null, 3) }`);
+		this.getLogger().ifDebug(() => `onMount newIds: ${ JSON.stringify(this.newIds) }`);
 	}
 
 	computeRemaining() {
@@ -87,7 +85,7 @@ class App extends Component {
 			newTodo.title = this.newTodoValue;
 			event.target.value = "";
 			this.todos.push(newTodo);
-			this.getLogger().ifDebug(() => `Created todo item: ${ JSON.stringify(newTodo) }`);
+			this.getLogger().ifDebug(() => `Created: ${ JSON.stringify(newTodo) }`);
 		}
 	}
 
@@ -95,7 +93,7 @@ class App extends Component {
 		const removeIdx = this.todos.indexOf(todo);
 		if (removeIdx > -1) {
 			this.todos.splice(removeIdx, 1);
-			this.getLogger().ifDebug(() => `Removed todo item: ${ JSON.stringify(todo) }`);
+			this.getLogger().ifDebug(() => `Removed: ${ JSON.stringify(todo) }`);
 		}
 	}
 
@@ -107,7 +105,7 @@ class App extends Component {
 	toggleAll() {
 		this.todos.forEach(todo => todo.completed = !this.togAllDoneOrNot);
 		this.togAllDoneOrNot = !this.togAllDoneOrNot;
-		this.getLogger().ifDebug(() => `all items done: ${this.togAllDoneOrNot}`);
+		this.getLogger().ifDebug(() => `all items marked done: ${this.togAllDoneOrNot}`);
 	}
 }
 
@@ -141,7 +139,7 @@ class TodoItem extends Component {
 		switch (event.keyCode) {
 			case KEY_ENTER:
 				event.target.blur();
-				this.getLogger().ifDebug(() => `New text of todo: ${ this.getValue().title }`);
+				this.getLogger().ifDebug(() => `New todo text: ${ this.getValue().title }`);
 				break;
 			case KEY_ESC:
 				this.cancelEdit();
