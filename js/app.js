@@ -99,7 +99,7 @@ class App extends Component {
 	}
 
 	removeTodo(todo) {
-		const removeIdx = this.todos.indexOf(todo);
+		const removeIdx = this.todos.findIndex(e => e.id === todo.id);
 		if (removeIdx > -1) {
 			this.todos.splice(removeIdx, 1);
 			this.getLogger().ifDebug(() => `Removed: ${ JSON.stringify(todo) }`);
