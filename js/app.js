@@ -31,16 +31,24 @@ class TodoListItem {
 }
 
 class TodoRepo {
+	constructor(logger) {
+		this.logr = logger;
+	}
+
 	storeAll(todos) {
+		this.logr.ifTrace(() => `store all: ${ todos }`);
 		window.localStorage.setItem(todoList, JSON.stringify(todos));
 	}
 	getAll() {
+		this.logr.ifTrace(() => `get all todos`);
 		return JSON.parse(window.localStorage.getItem(todoList)) || [];
 	}
 	storeVisibleState(state) {
+		this.logr.ifTrace(() => `store visible state: ${ state }`);
 		window.localStorage.setItem(visibilityState, state);
 	}
 	getVisibleState() {
+		this.logr.ifTrace(() => `get visible state`);
 		return window.localStorage.getItem(visibilityState) || "all";
 	}
 }
@@ -154,8 +162,7 @@ class TodoItem extends Component {
 
 builder("body>div#appbody", PROPERTIES)
 	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? `${ str }s` : str))
-	.withSingleton(TodoRepo.name, TodoRepo)
-	.withPrototype(App.name, App, args().withProperty("todo.person").build())
+	.withSingleton(TodoRepo.name, TodoRepo, args().withLogger("Repo", "trace").build())
 	.withPrototype(App.name, App, args().withProperty(PERSONALIZED).withInstanceId(11).build())
 	.withPrototype(TodoItem.name, TodoItem)
 	.withInitializer(stage => {
