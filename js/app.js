@@ -54,10 +54,11 @@ class TodoRepo {
 }
 
 class App extends Component {
-	constructor(who) {
+	constructor(who, newIds) {
 		super(template(App.name.toLowerCase()));
 
 		this.who = who || "";
+		this.newIds = newIds;
 
 		this.repo = this.get(TodoRepo.name);
 		this.todos = this.repo.getAll();
