@@ -2,17 +2,21 @@ const args = cydran.argumentsBuilder;
 const builder = cydran.builder;
 const Component = cydran.Component;
 const Filters = cydran.Filters;
+const keys = cydran.PropertyKeys;
+const Level = cydran.Level;
 
 const PERSONALIZED = "todo.person";
 const PROPERTIES = {
-	"cydran.production.enabled": false,
-	"cydran.production.startphrase": "Let it ride! Baby needs new shoes!",
-	"cydran.development.startphrase": "Any fool can write code that a computer can understand. Good programmers write code that humans can understand. (Martin Fowler)",
-	"cydran.logging.color.debug": "#00f900",
-	"cydran.logging.level": "info",
-	"cydran.logging.label": "ctdmvc",
-	"cydran.logging.label.visible": false,
-	[PERSONALIZED]: ""
+	[keys.CYDRAN_PRODUCTION_ENABLED]: false,
+	[keys.CYDRAN_PRODUCTION_STARTPHRASE]: "Let it ride! Baby needs new shoes!",
+	[keys.CYDRAN_DEVELOPMENT_STARTPHRASE]: "Any fool can write code that a computer can understand. Good programmers write code that humans can understand. (Martin Fowler)",
+	[`${keys.CYDRAN_LOG_COLOR_PREFIX}.debug`]: "#00f900",
+	[keys.CYDRAN_DEVELOPMENT_LOG_LEVEL]: Level[Level.DEBUG],
+	[keys.CYDRAN_PRODUCTION_LOG_LEVEL]: Level[Level.ERROR],
+	[keys.CYDRAN_LOG_LABEL]: "ctdmvc",
+	[keys.CYDRAN_LOG_LABEL_VISIBLE]: false,
+	[keys.CYDRAN_LOG_STRATEGY]: "bubba",
+	[PERSONALIZED]: "burk"
 };
 
 const KEY_ENTER = 13;
@@ -81,7 +85,7 @@ class App extends Component {
 	}
 
 	onMount() {
-		this.getLogger().ifDebug(() => `onMount newIds: ${ JSON.stringify(this.newIds) }`);
+		this.getLogger().ifWarn(() => `onMount newIds: ${ JSON.stringify(this.newIds) }`);
 	}
 
 	computeRemaining() {
@@ -163,7 +167,7 @@ class TodoItem extends Component {
 
 builder("body>div#appbody", PROPERTIES)
 	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? `${ str }s` : str))
-	.withSingleton(TodoRepo.name, TodoRepo, args().withLogger("Repo", "trace").build())
+	.withSingleton(TodoRepo.name, TodoRepo, args().withLogger("Repo", Level[Level.TRACE]).build())
 	.withPrototype(App.name, App, args().withProperty(PERSONALIZED).withInstanceId(11).build())
 	.withPrototype(TodoItem.name, TodoItem)
 	.withInitializer(stage => {
