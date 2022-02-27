@@ -8,3 +8,4 @@ node_modules/
 tarball.sh
 *.tgz
 *.tar.gz
+startup_times.txt
