@@ -85,7 +85,11 @@ class App extends Component {
 	}
 
 	onMount() {
-		this.getLogger().ifWarn(() => `onMount newIds: ${ JSON.stringify(this.newIds) }`);
+		/*
+		enumKeys(Level).forEach(k => {
+			this.getLogger().ifLog(() => `onMount newIds: ${ JSON.stringify(this.newIds) }`, Level[k]);
+		});
+		*/
 	}
 
 	computeRemaining() {
