@@ -2,21 +2,21 @@ const args = cydran.argumentsBuilder;
 const builder = cydran.builder;
 const Component = cydran.Component;
 const Filters = cydran.Filters;
-const keys = cydran.PropertyKeys;
+const PropertyKeys = cydran.PropertyKeys;
 const Level = cydran.Level;
+const enumKeys = cydran.enumKeys;
 
 const PERSONALIZED = "todo.person";
 const PROPERTIES = {
-	[keys.CYDRAN_PRODUCTION_ENABLED]: false,
-	[keys.CYDRAN_PRODUCTION_STARTPHRASE]: "Let it ride! Baby needs new shoes!",
-	[keys.CYDRAN_DEVELOPMENT_STARTPHRASE]: "Any fool can write code that a computer can understand. Good programmers write code that humans can understand. (Martin Fowler)",
-	[`${keys.CYDRAN_LOG_COLOR_PREFIX}.debug`]: "#00f900",
-	[keys.CYDRAN_DEVELOPMENT_LOG_LEVEL]: Level[Level.DEBUG],
-	[keys.CYDRAN_PRODUCTION_LOG_LEVEL]: Level[Level.ERROR],
-	[keys.CYDRAN_LOG_LABEL]: "ctdmvc",
-	[keys.CYDRAN_LOG_LABEL_VISIBLE]: false,
-	[keys.CYDRAN_LOG_STRATEGY]: "bubba",
-	[PERSONALIZED]: "burk"
+	[PropertyKeys.CYDRAN_LOG_LEVEL]: false,
+	// [PropertyKeys.CYDRAN_STRICT_ENABLED]: false,
+	[PropertyKeys.CYDRAN_STRICT_STARTPHRASE]: "The task of the software development team is to engineer the illusion of simplicity. (Grady Booch)",
+	[`${PropertyKeys.CYDRAN_LOG_COLOR_PREFIX}.debug`]: "#00f900",
+	[PropertyKeys.CYDRAN_LOG_LEVEL]: Level[Level.DEBUG],
+	[PropertyKeys.CYDRAN_LOG_LABEL]: "ctdmvc",
+	[PropertyKeys.CYDRAN_LOG_LABEL_VISIBLE]: false,
+	[PropertyKeys.CYDRAN_LOG_PREAMBLE_ORDER]: "time:level:name",
+	[PERSONALIZED]: ""
 };
 
 const KEY_ENTER = 13;
