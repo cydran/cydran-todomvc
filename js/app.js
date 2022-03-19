@@ -67,7 +67,7 @@ class App extends Component {
 		this.repo = this.get(TodoRepo.name);
 		this.todos = this.repo.getAll();
 		this.filterVisiblity = this.repo.getVisibleState();
-		this.filtered = Filters.builder(this, "m().todos")
+		this.filtered = this.withFilter("m().todos")
 			.withPredicate("p(0) === 'all' || !v().completed && p(0) === 'active' || v().completed && p(0) === 'completed'", "m().filterVisiblity")
 			.build();
 		this.remaining = 0;
