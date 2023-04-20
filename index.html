@@ -56,9 +56,9 @@
 			<div class="view">
 				<input class="toggle" type="checkbox" c-onclick="m().isComplete()" c-checked="v().completed" />
 				<label c-ondblclick="m().edit()">{{v().title}}</label>
-				<button class="destroy" c-onclick="m().kill($event)"></button>
+				<button class="destroy" c-onclick="m().kill()"></button>
 			</div>
-			<input class="edit" type="text" c-model="v().title" c-onkeyup="m().tryUpdate($event)" c-force-focus="m().inEditMode" />
+			<input class="edit" type="text" c-model="v().title" c-onkeyup="m().tryUpdate(p().$event)" c-force-focus="m().inEditMode" />
 		</li>
 	</template>
 </html>
