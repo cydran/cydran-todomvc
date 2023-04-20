@@ -4,19 +4,21 @@ const Component = cydran.Component;
 const Filters = cydran.Filters;
 const PropertyKeys = cydran.PropertyKeys;
 const Level = cydran.Level;
-const enumKeys = cydran.enumKeys;
+const StageImpl = cydran.StageImpl;
 
 const PERSONALIZED = "todo.person";
+const DATA_SRLZ_LVL = "data.serialize.level";
 const PROPERTIES = {
 	[PropertyKeys.CYDRAN_LOG_LEVEL]: false,
 	// [PropertyKeys.CYDRAN_STRICT_ENABLED]: false,
-	[PropertyKeys.CYDRAN_STRICT_STARTPHRASE]: "The task of the software development team is to engineer the illusion of simplicity. (Grady Booch)",
+	[PropertyKeys.CYDRAN_STRICT_STARTPHRASE]: "Before software can be reusable it first has to be usable. (Ralph Johnson)",
 	[`${PropertyKeys.CYDRAN_LOG_COLOR_PREFIX}.debug`]: "#00f900",
 	[PropertyKeys.CYDRAN_LOG_LEVEL]: Level[Level.DEBUG],
 	[PropertyKeys.CYDRAN_LOG_LABEL]: "ctdmvc",
 	[PropertyKeys.CYDRAN_LOG_LABEL_VISIBLE]: false,
 	[PropertyKeys.CYDRAN_LOG_PREAMBLE_ORDER]: "time:level:name",
-	[PERSONALIZED]: ""
+	[PERSONALIZED]: "",
+	[DATA_SRLZ_LVL]: Level[Level.DEBUG]
 };
 
 const KEY_ENTER = 13;
@@ -40,7 +42,7 @@ class TodoRepo {
 	}
 
 	storeAll(todos) {
-		this.logr.ifTrace(() => `store all: ${ todos }`);
+		this.logr.ifTrace(() => `store all: ${ JSON.stringify(todos) }`);
 		window.localStorage.setItem(todoList, JSON.stringify(todos));
 	}
 	getAll() {
@@ -64,32 +66,28 @@ class App extends Component {
 		this.who = who || "";
 		this.newIds = newIds;
 
-		this.repo = this.get(TodoRepo.name);
-		this.todos = this.repo.getAll();
-		this.filterVisiblity = this.repo.getVisibleState();
-		this.filtered = this.withFilter("m().todos")
-			.withPredicate("p(0) === 'all' || !v().completed && p(0) === 'active' || v().completed && p(0) === 'completed'", "m().filterVisiblity")
-			.build();
+
 		this.remaining = 0;
 		this.togAllDoneOrNot = false;
 		this.newTodoValue = "";
 
-		this.watch("m().todos", () => {
+		this.$c().onExpressionChange("m().todos", () => {
 			this.computeRemaining();
 			this.repo.storeAll(this.todos);
 		});
 
-		this.watch("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
-		this.on(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
-		this.computeRemaining();
+		this.$c().onExpressionChange("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
+		this.$c().onMessage(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
 	}
 
 	onMount() {
-		/*
-		enumKeys(Level).forEach(k => {
-			this.getLogger().ifLog(() => `onMount newIds: ${ JSON.stringify(this.newIds) }`, Level[k]);
-		});
-		*/
+		this.repo = this.$c().getObject(TodoRepo.name);
+		this.todos = this.repo.getAll();
+		this.filterVisiblity = this.repo.getVisibleState();
+		this.filtered = this.$c().createFilter("m().todos")
+			.withPredicate("p(0) === 'all' || !v().completed && p(0) === 'active' || v().completed && p(0) === 'completed'", "m().filterVisiblity")
+			.build();
+		this.computeRemaining();
 	}
 
 	computeRemaining() {
@@ -102,7 +100,7 @@ class App extends Component {
 			newTodo.title = this.newTodoValue;
 			event.target.value = "";
 			this.todos.push(newTodo);
-			this.getLogger().ifDebug(() => `Created: ${ JSON.stringify(newTodo) }`);
+			this.$c().getLogger().ifDebug(() => `Created: ${ JSON.stringify(newTodo) }`);
 		}
 	}
 
@@ -110,19 +108,19 @@ class App extends Component {
 		const removeIdx = this.todos.findIndex(e => e.id === todo.id);
 		if (removeIdx > -1) {
 			this.todos.splice(removeIdx, 1);
-			this.getLogger().ifDebug(() => `Removed: ${ JSON.stringify(todo) }`);
+			this.$c().getLogger().ifDebug(() => `Removed: ${ JSON.stringify(todo) }`);
 		}
 	}
 
 	removeCompletedItems() {
 		this.todos = this.todos.filter(item => !item.completed);
-		this.getLogger().ifDebug(() => `Removed completed items`);
+		this.$c().getLogger().ifDebug(() => `Removed completed items`);
 	}
 
 	toggleAll() {
 		this.todos.forEach(todo => todo.completed = !this.togAllDoneOrNot);
 		this.togAllDoneOrNot = !this.togAllDoneOrNot;
-		this.getLogger().ifDebug(() => `all items marked done: ${this.togAllDoneOrNot}`);
+		this.$c().getLogger().ifDebug(() => `all items marked done: ${this.togAllDoneOrNot}`);
 	}
 }
 
@@ -134,16 +132,16 @@ class TodoItem extends Component {
 	}
 
 	kill() {
-		this.broadcast(TODO_CHANNEL, RMV_TODO, this.getValue());
+		this.$c().send(RMV_TODO, this.$c().getValue()).onChannel(TODO_CHANNEL).toContext();
 	}
 
 	edit() {
 		this.inEditMode = true;
-		this.origEditText = this.getValue().title;
+		this.origEditText = this.$c().getValue().title;
 	}
 
 	cancelEdit() {
-		this.getValue().title = this.origEditText;
+		this.$c().getValue().title = this.origEditText;
 		this.doneEdit();
 	}
 
@@ -156,7 +154,7 @@ class TodoItem extends Component {
 		switch (event.keyCode) {
 			case KEY_ENTER:
 				event.target.blur();
-				this.getLogger().ifDebug(() => `New todo text: ${ this.getValue().title }`);
+				this.$c().getLogger().ifDebug(() => `New todo text: ${ this.$c().getValue().title }`);
 				break;
 			case KEY_ESC:
 				this.cancelEdit();
@@ -165,17 +163,17 @@ class TodoItem extends Component {
 	}
 
 	isComplete() {
-		this.getValue().completed = !this.getValue().completed;
+		this.$c().getValue().completed = !this.$c().getValue().completed;
 	}
 }
 
-builder("body>div#appbody", PROPERTIES)
-	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? `${ str }s` : str))
-	.withSingleton(TodoRepo.name, TodoRepo, args().withLogger(`${ App.name }[Repo]`, Level[Level.TRACE]).build())
-	.withPrototype(App.name, App, args().withProperty(PERSONALIZED).withInstanceId(11).build())
-	.withPrototype(TodoItem.name, TodoItem)
-	.withInitializer(stage => {
-		stage.setComponentFromRegistry(App.name);
-	})
-	.build()
-	.start();
+const stage = new StageImpl("body>div#appbody", PROPERTIES);
+stage.addPreInitializer(stage => {
+	stage.getScope().add("pluralize", (str, cnt) => (cnt !== 1 ? `${ str }s` : str));
+	stage.registerSingleton(TodoRepo.name, TodoRepo, args().withLogger(`${ App.name }[Repo]`, stage.getProperties().getAsString(DATA_SRLZ_LVL)).build());
+	stage.registerPrototype(TodoItem.name, TodoItem);
+});
+stage.addInitializer(stage => {
+	stage.setComponent(new App(PROPERTIES.PERSONALIZED, 11));
+})
+stage.start();

@@ -22,7 +22,7 @@
 		<section class="todoapp">
 			<header class="header">
 				<h1><span c-if="m().who.length > 0">[[m().who]]&nbsp;</span>todos</h1>
-				<input class="new-todo" autofocus="true" autocomplete="off" placeholder="What needs to be done?" c-onkeyup="m().addTodo($event)" c-model="m().newTodoValue">
+				<input class="new-todo" autofocus="true" autocomplete="off" placeholder="What needs to be done?" c-onkeyup="m().addTodo(p().$event)" c-model="m().newTodoValue">
 			</header>
 			<section class="main" c-if="m().todos.length > 0">
 				<input id="toggle-all" class="toggle-all" type="checkbox" c-onclick="m().toggleAll()">
@@ -33,7 +33,7 @@
 			</section>
 			<footer class="footer" c-if="m().todos.length > 0">
 				<span class="todo-count">
-					<strong>{{m().remaining}}</strong> {{pluralize('item', m().remaining)}} left
+					<strong>{{m().remaining}}</strong> {{s().pluralize('item', m().remaining)}} left
 				</span>
 				<ul class="filters">
 					<li><a c-onclick="m().filterVisiblity = 'all'" c-class="{'selected': m().filterVisiblity == 'all'}">All</a></li>
