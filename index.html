@@ -9,6 +9,8 @@
 		<script src="node_modules/todomvc-common/base.js" type="application/javascript"></script>
 		<script src="node_modules/cydran/dist/cydran.js" type="application/javascript"></script>
 		<script src="js/app.js" type="application/javascript"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="TodoMvc application based on https://todomvc.com">
 	</head>
 	<body>
 		<div id="appbody"></div>
@@ -27,9 +29,11 @@
 			<section class="main" c-if="m().todos.length > 0">
 				<input id="toggle-all" class="toggle-all" type="checkbox" c-onclick="m().toggleAll()">
 				<label for="toggle-all">Mark all as complete</label>
-				<ul class="todo-list" c-each="m().filtered.items()" c-each-mode="generated">
-					<template c-type="item" c-component="TodoItem"></template>
-				</ul>
+				<form name="todolist">
+					<ul class="todo-list" c-each="m().filtered.items()" c-each-mode="generated">
+						<template c-type="item" c-component="TodoItem"></template>
+					</ul>
+				</form>
 			</section>
 			<footer class="footer" c-if="m().todos.length > 0">
 				<span class="todo-count">
