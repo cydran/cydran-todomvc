@@ -3,28 +3,28 @@
   "name": "TodoMVC - Simple todo list",
   "icons": [
     {
-      "src": "/images/tick.svg",
+      "src": "images/tick.svg",
       "type": "image/svg+xml",
       "sizes": "512x512"
     },
     {
-      "src": "/images/tick.svg",
+      "src": "images/tick.svg",
       "type": "image/svg+xml",
       "sizes": "192x192"
     },
     {
-      "src": "/images/tick_x128.png",
+      "src": "images/tick_x128.png",
       "type": "image/png",
       "sizes": "128x128"
     },
     {
-      "src": "/images/tick_x192.png",
+      "src": "images/tick_x192.png",
       "type": "image/png",
       "sizes": "192x192",
       "purpose": "any maskable"
     },
     {
-      "src": "/images/tick_x512.png",
+      "src": "images/tick_x512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
@@ -33,19 +33,19 @@
   "start_url": "/?source=pwa",
   "background_color": "#3367D6",
   "display": "standalone",
-  "scope": "/",
+  "scope": "./",
   "theme_color": "#3367D6",
   "shortcuts": [],
   "description": "Todo list application",
   "screenshots": [
     {
-      "src": "/images/screenshot1.png",
+      "src": "images/screenshot1.png",
       "type": "image/png",
       "sizes": "540x720",
       "form_factor": "narrow"
     },
     {
-      "src": "/images/screenshot2.png",
+      "src": "images/screenshot2.png",
       "type": "image/png",
       "sizes": "720x540",
       "form_factor": "wide"

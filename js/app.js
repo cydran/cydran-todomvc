@@ -71,12 +71,12 @@ class App extends Component {
 		this.togAllDoneOrNot = false;
 		this.newTodoValue = "";
 
-		this.$c().onExpressionChange("m().todos", () => {
+		this.$c().onExpressionValueChange("m().todos", () => {
 			this.computeRemaining();
 			this.repo.storeAll(this.todos);
 		});
 
-		this.$c().onExpressionChange("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
+		this.$c().onExpressionValueChange("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
 		this.$c().onMessage(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
 	}
 
