@@ -1,5 +1,6 @@
 const listName = "todolist";
 const visibilityState = "visibility";
+const defaultState = "all";
 
 class TodoRepo {
 	constructor(logger) {
@@ -20,7 +21,7 @@ class TodoRepo {
 	}
 	getVisibleState() {
 		this.logr.ifTrace(() => `get visible state`);
-		return window.localStorage.getItem(visibilityState) || "all";
+		return window.localStorage.getItem(visibilityState) || defaultState;
 	}
 }
 
