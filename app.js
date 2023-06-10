@@ -7,6 +7,7 @@ const Filters = cydran.Filters;
 const PropertyKeys = cydran.PropertyKeys;
 const Level = cydran.Level;
 const StageImpl = cydran.StageImpl;
+const uuidV4 = cydran.uuidV4;
 
 const PERSONALIZED = "todo.person";
 const DATA_SRLZ_LVL = "data.serialize.level";
@@ -20,17 +21,20 @@ const PROPERTIES = {
 	[PropertyKeys.CYDRAN_LOG_LABEL_VISIBLE]: false,
 	[PropertyKeys.CYDRAN_LOG_PREAMBLE_ORDER]: "time:level:name",
 	[PERSONALIZED]: "",
-	[DATA_SRLZ_LVL]: Level[Level.DEBUG]
+	[DATA_SRLZ_LVL]: Level[Level.TRACE]
 };
 
 const KEY_ENTER = 13;
 const KEY_ESC = 27;
 const TODO_CHANNEL = "TODOS";
 const RMV_TODO = "removeTodo";
+const ADD_TODO = "addTodo";
+const UP_TODO = "updateTodo";
 const template = (id) => document.querySelector(`template[id=${ id }]`).innerHTML.trim();
 
 class TodoListItem {
-	constructor() {
+	constructor(id) {
+		this.id = id;
 		this.title = null;
 		this.completed = false;
 	}
@@ -50,11 +54,12 @@ class App extends Component {
 
 		this.$c().onExpressionValueChange("m().todos", () => {
 			this.computeRemaining();
-			this.repo.storeAll(this.todos);
 		});
 
 		this.$c().onExpressionValueChange("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
 		this.$c().onMessage(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
+		this.$c().onMessage(ADD_TODO).forChannel(TODO_CHANNEL).invoke(this.addTodo);
+		this.$c().onMessage(UP_TODO).forChannel(TODO_CHANNEL).invoke(this.updateTodo);
 	}
 
 	onMount() {
@@ -73,11 +78,12 @@ class App extends Component {
 
 	addTodo(event) {
 		if (event.keyCode == KEY_ENTER) {
-			const newTodo = new TodoListItem();
+			let newTodo = new TodoListItem(uuidV4());
 			newTodo.title = this.newTodoValue;
 			event.target.value = "";
 			this.todos.push(newTodo);
-			this.$c().getLogger().ifDebug(() => `Created: ${ JSON.stringify(newTodo) }`);
+			newTodo = this.todos[this.todos.length - 1];
+			this.repo.add(newTodo);
 		}
 	}
 
@@ -85,13 +91,20 @@ class App extends Component {
 		const removeIdx = this.todos.findIndex(e => e.id === todo.id);
 		if (removeIdx > -1) {
 			this.todos.splice(removeIdx, 1);
-			this.$c().getLogger().ifDebug(() => `Removed: ${ JSON.stringify(todo) }`);
+			this.repo.remove(todo);
 		}
 	}
 
+	updateTodo(todo) {
+		this.repo.update(todo);
+	}
+
 	removeCompletedItems() {
+		this.todos.filter(item => item.completed)
+			.forEach(itm => {
+				this.repo.remove(itm);
+			});
 		this.todos = this.todos.filter(item => !item.completed);
-		this.$c().getLogger().ifDebug(() => `Removed completed items`);
 	}
 
 	toggleAll() {
@@ -106,41 +119,43 @@ class TodoItem extends Component {
 		super(template(TodoItem.name.toLowerCase()));
 		this.inEditMode = false;
 		this.origEditText = "";
+
+		this.$c().onExpressionValueChange("v().completed", () => {
+			this.$c().send(UP_TODO, this.$c().getValue()).onChannel(TODO_CHANNEL).toContext();
+		});
 	}
 
-	kill() {
-		this.$c().send(RMV_TODO, this.$c().getValue()).onChannel(TODO_CHANNEL).toContext();
+	kill(event) {
+		if(event.detail == 1) {
+			this.$c().send(RMV_TODO, this.$c().getValue()).onChannel(TODO_CHANNEL).toContext();
+		}
 	}
 
 	edit() {
-		this.inEditMode = true;
-		this.origEditText = this.$c().getValue().title;
+		this.invertMode();
 	}
 
-	cancelEdit() {
-		this.$c().getValue().title = this.origEditText;
-		this.doneEdit();
-	}
-
-	doneEdit() {
-		this.origEditText = "";
-		this.inEditMode = false;
-	}
-
-	finishEdit(event) {
+	doneEdit(event) {
+		this.invertMode();
 		switch (event.keyCode) {
 			case KEY_ENTER:
 				event.target.blur();
-				this.$c().getLogger().ifDebug(() => `New todo text: ${ this.$c().getValue().title }`);
+				this.$c().getLogger().ifDebug(() => `Updated todo text: ${ this.$c().getValue().title }`);
+				this.repo.update(this.$c().getValue());
 				break;
 			case KEY_ESC:
-				this.cancelEdit();
+				this.$c().getValue().title = this.origEditText;
 				break;
 		}
 	}
 
 	isComplete() {
 		this.$c().getValue().completed = !this.$c().getValue().completed;
+	}
+
+	invertMode() {
+		this.inEditMode = !this.inEditMode;
+		this.origEditText = this.origEditText.length === 0 ? this.$c().getValue().title: "";
 	}
 }
 
