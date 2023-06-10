@@ -7,6 +7,7 @@ const Component = cydran.Component;
 const PropertyKeys = cydran.PropertyKeys;
 const Level = cydran.Level;
 const StageImpl = cydran.StageImpl;
+const uuidV4 = cydran.uuidV4;
 
 const PERSONALIZED = "todo.person";
 const DATA_SRLZ_LVL = "data.serialize.level";
@@ -27,6 +28,7 @@ const KEY_ENTER = 'Enter';
 const KEY_ESC = 'Escape';
 const TODO_CHANNEL = "TODOS";
 const RMV_TODO = "removeTodo";
+const ADD_TODO = "addTodo";
 const UP_TODO = "updateTodo";
 const template = (id) => document.querySelector(`template[id=${ id }]`).innerHTML.trim();
 
@@ -56,8 +58,8 @@ class App extends Component {
 
 		this.$c().onExpressionValueChange("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
 		this.$c().onMessage(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
+		this.$c().onMessage(ADD_TODO).forChannel(TODO_CHANNEL).invoke(this.addTodo);
 		this.$c().onMessage(UP_TODO).forChannel(TODO_CHANNEL).invoke(this.updateTodo);
-	
 	}
 
 	onMount() {
@@ -120,8 +122,8 @@ class TodoItem extends Component {
 		this.origEditText = "";
 		this.dirty = false;
 
-		this.watch("v().completed", () => {
-			this.broadcast(TODO_CHANNEL, UP_TODO, this.getValue());
+		this.$c().onExpressionValueChange("v().completed", () => {
+			this.$c().send(UP_TODO, this.$c().getValue()).onChannel(TODO_CHANNEL).toContext();
 		});
 	}
 
@@ -146,14 +148,16 @@ class TodoItem extends Component {
 		this.origEditText = "";
 	}
 
-	finishEdit(event) {
+	doneEdit(event) {
+		this.invertMode();
 		switch (event.keyCode) {
 			case KEY_ENTER:
 				event.target.blur();
-				this.$c().getLogger().ifDebug(() => `New todo text: ${ this.$c().getValue().title }`);
+				this.$c().getLogger().ifDebug(() => `Updated todo text: ${ this.$c().getValue().title }`);
+				this.repo.update(this.$c().getValue());
 				break;
 			case KEY_ESC:
-				this.cancelEdit();
+				this.$c().getValue().title = this.origEditText;
 				break;
 		}
 	}
