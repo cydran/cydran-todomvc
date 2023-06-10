@@ -33,7 +33,7 @@
 				<input id="toggle-all" class="toggle-all" type="checkbox" c-onclick="m().toggleAll()">
 				<label for="toggle-all">Mark all as complete</label>
 				<form name="todolist">
-					<ul class="todo-list" c-each="m().filtered.items()" c-each-mode="generated">
+					<ul class="todo-list" c-each="m().filtered.items()" c-each-mode="none">
 						<template c-type="item" c-component="TodoItem"></template>
 					</ul>
 				</form>
