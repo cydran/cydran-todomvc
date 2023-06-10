@@ -1,3 +1,5 @@
+import TodoRepo from "./js/repo.js";
+
 const args = cydran.argumentsBuilder;
 const builder = cydran.builder;
 const Component = cydran.Component;
@@ -23,8 +25,6 @@ const PROPERTIES = {
 
 const KEY_ENTER = 13;
 const KEY_ESC = 27;
-const todoList = "todolist";
-const visibilityState = "visibility";
 const TODO_CHANNEL = "TODOS";
 const RMV_TODO = "removeTodo";
 const template = (id) => document.querySelector(`template[id=${ id }]`).innerHTML.trim();
@@ -33,29 +33,6 @@ class TodoListItem {
 	constructor() {
 		this.title = null;
 		this.completed = false;
-	}
-}
-
-class TodoRepo {
-	constructor(logger) {
-		this.logr = logger;
-	}
-
-	storeAll(todos) {
-		this.logr.ifTrace(() => `store all: ${ JSON.stringify(todos) }`);
-		window.localStorage.setItem(todoList, JSON.stringify(todos));
-	}
-	getAll() {
-		this.logr.ifTrace(() => `get all todos`);
-		return JSON.parse(window.localStorage.getItem(todoList)) || [];
-	}
-	storeVisibleState(state) {
-		this.logr.ifTrace(() => `store visible state: ${ state }`);
-		window.localStorage.setItem(visibilityState, state);
-	}
-	getVisibleState() {
-		this.logr.ifTrace(() => `get visible state`);
-		return window.localStorage.getItem(visibilityState) || "all";
 	}
 }
 
