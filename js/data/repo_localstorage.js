@@ -1,5 +1,4 @@
-const listName = "todolist";
-const visibilityState = "visibility";
+const vStateKey = "visibility";
 const defaultState = "all";
 
 class TodoRepo {
@@ -27,7 +26,7 @@ class TodoRepo {
 		this.logr.ifTrace(() => `get all todos`);
 		const retval = [];
 		Object.keys(this.repo).forEach(k => {
-			if(k !== visibilityState) {
+			if(k !== vStateKey) {
 				retval.push(JSON.parse(this.repo.getItem(k)));
 			}
 		});
@@ -36,12 +35,12 @@ class TodoRepo {
 
 	storeVisibleState(state) {
 		this.logr.ifTrace(() => `store visible state: ${ state }`);
-		this.repo.setItem(visibilityState, state);
+		this.repo.setItem(vStateKey, state);
 	}
 
 	getVisibleState() {
 		this.logr.ifTrace(() => `get visible state`);
-		return this.repo.getItem(visibilityState) || defaultState;
+		return this.repo.getItem(vStateKey) || defaultState;
 	}
 }
 
