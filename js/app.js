@@ -1,59 +1,66 @@
+import TodoRepo from "./data/repo_localstorage.js";
+// import {argumentsBuilder as args, PropertyKeys, Level, StageImpl, uuidV4, Component} from "./node_modules/cydran/dist/cydran.js";
+
 const args = cydran.argumentsBuilder;
 const builder = cydran.builder;
 const Component = cydran.Component;
-const Filters = cydran.Filters;
 const PropertyKeys = cydran.PropertyKeys;
 const Level = cydran.Level;
 const enumKeys = cydran.enumKeys;
 
 const PERSONALIZED = "todo.person";
+const DATA_SRLZ_LVL = "data.serialize.level";
 const PROPERTIES = {
 	[PropertyKeys.CYDRAN_LOG_LEVEL]: false,
 	// [PropertyKeys.CYDRAN_STRICT_ENABLED]: false,
-	[PropertyKeys.CYDRAN_STRICT_STARTPHRASE]: "The task of the software development team is to engineer the illusion of simplicity. (Grady Booch)",
+	[PropertyKeys.CYDRAN_STRICT_STARTPHRASE]: "Before software can be reusable it first has to be usable. (Ralph Johnson)",
 	[`${PropertyKeys.CYDRAN_LOG_COLOR_PREFIX}.debug`]: "#00f900",
 	[PropertyKeys.CYDRAN_LOG_LEVEL]: Level[Level.DEBUG],
 	[PropertyKeys.CYDRAN_LOG_LABEL]: "ctdmvc",
 	[PropertyKeys.CYDRAN_LOG_LABEL_VISIBLE]: false,
 	[PropertyKeys.CYDRAN_LOG_PREAMBLE_ORDER]: "time:level:name",
-	[PERSONALIZED]: ""
+	[PERSONALIZED]: "",
+	[DATA_SRLZ_LVL]: Level[Level.TRACE]
 };
 
-const KEY_ENTER = 13;
-const KEY_ESC = 27;
-const todoList = "todolist";
-const visibilityState = "visibility";
+const KEY_ENTER = 'Enter';
+const KEY_ESC = 'Escape';
 const TODO_CHANNEL = "TODOS";
 const RMV_TODO = "removeTodo";
-const template = (id) => document.querySelector(`template[id=${ id }]`).innerHTML.trim();
+const UP_TODO = "updateTodo";
+const template = (id) => document.querySelector(`template[id=${id}]`).innerHTML.trim();
 
-class TodoListItem {
-	constructor() {
-		this.title = null;
-		this.completed = false;
+
+const CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+const uuidV4 = () => {
+	const chars = CHARS;
+	const uuid = new Array(36);
+	let rnd = 0;
+	let r = null;
+
+	for (let i = 0; i < 36; i++) {
+		if (i === 8 || i === 13 || i === 18 || i === 23) {
+			uuid[i] = '-';
+		} else if (i === 14) {
+			uuid[i] = '4';
+		} else {
+			if (rnd <= 0x02) {
+				rnd = 0x2000000 + (Math.random() * 0x1000000) | 0;
+			}
+
+			r = rnd & 0xf;
+			rnd = rnd >> 4;
+			uuid[i] = chars[(i === 19) ? (r & 0x3) | 0x8 : r];
+		}
 	}
+	return uuid.join('');
 }
 
-class TodoRepo {
-	constructor(logger) {
-		this.logr = logger;
-	}
-
-	storeAll(todos) {
-		this.logr.ifTrace(() => `store all: ${ todos }`);
-		window.localStorage.setItem(todoList, JSON.stringify(todos));
-	}
-	getAll() {
-		this.logr.ifTrace(() => `get all todos`);
-		return JSON.parse(window.localStorage.getItem(todoList)) || [];
-	}
-	storeVisibleState(state) {
-		this.logr.ifTrace(() => `store visible state: ${ state }`);
-		window.localStorage.setItem(visibilityState, state);
-	}
-	getVisibleState() {
-		this.logr.ifTrace(() => `get visible state`);
-		return window.localStorage.getItem(visibilityState) || "all";
+class TodoListItem {
+	constructor(id) {
+		this.id = id;
+		this.title = null;
+		this.completed = false;
 	}
 }
 
@@ -64,32 +71,28 @@ class App extends Component {
 		this.who = who || "";
 		this.newIds = newIds;
 
-		this.repo = this.get(TodoRepo.name);
-		this.todos = this.repo.getAll();
-		this.filterVisiblity = this.repo.getVisibleState();
-		this.filtered = this.withFilter("m().todos")
-			.withPredicate("p(0) === 'all' || !v().completed && p(0) === 'active' || v().completed && p(0) === 'completed'", "m().filterVisiblity")
-			.build();
+
 		this.remaining = 0;
 		this.togAllDoneOrNot = false;
 		this.newTodoValue = "";
 
 		this.watch("m().todos", () => {
 			this.computeRemaining();
-			this.repo.storeAll(this.todos);
 		});
 
 		this.watch("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
 		this.on(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
-		this.computeRemaining();
+		this.on(UP_TODO).forChannel(TODO_CHANNEL).invoke(this.updateTodo);
 	}
 
 	onMount() {
-		/*
-		enumKeys(Level).forEach(k => {
-			this.getLogger().ifLog(() => `onMount newIds: ${ JSON.stringify(this.newIds) }`, Level[k]);
-		});
-		*/
+		this.repo = this.get(TodoRepo.name);
+		this.todos = this.repo.getAll();
+		this.filterVisiblity = this.repo.getVisibleState();
+		this.filtered = this.withFilter("m().todos")
+			.withPredicate("p(0) === 'all' || !v().completed && p(0) === 'active' || v().completed && p(0) === 'completed'", "m().filterVisiblity")
+			.build();
+		this.computeRemaining();
 	}
 
 	computeRemaining() {
@@ -97,12 +100,14 @@ class App extends Component {
 	}
 
 	addTodo(event) {
-		if (event.keyCode == KEY_ENTER) {
-			const newTodo = new TodoListItem();
+		if (event.code === KEY_ENTER) {
+			let newTodo = new TodoListItem(uuidV4());
 			newTodo.title = this.newTodoValue;
 			event.target.value = "";
 			this.todos.push(newTodo);
-			this.getLogger().ifDebug(() => `Created: ${ JSON.stringify(newTodo) }`);
+			this.repo.add(newTodo);
+		} else if (event.code === KEY_ESC) {
+			event.target.value = "";
 		}
 	}
 
@@ -110,13 +115,20 @@ class App extends Component {
 		const removeIdx = this.todos.findIndex(e => e.id === todo.id);
 		if (removeIdx > -1) {
 			this.todos.splice(removeIdx, 1);
-			this.getLogger().ifDebug(() => `Removed: ${ JSON.stringify(todo) }`);
+			this.repo.remove(todo);
 		}
 	}
 
+	updateTodo(todo) {
+		this.repo.update(todo);
+	}
+
 	removeCompletedItems() {
+		this.todos.filter(item => item.completed)
+			.forEach(itm => {
+				this.repo.remove(itm);
+			});
 		this.todos = this.todos.filter(item => !item.completed);
-		this.getLogger().ifDebug(() => `Removed completed items`);
 	}
 
 	toggleAll() {
@@ -131,36 +143,29 @@ class TodoItem extends Component {
 		super(template(TodoItem.name.toLowerCase()));
 		this.inEditMode = false;
 		this.origEditText = "";
+		this.dirty = false;
+
+		this.watch("v().completed", () => {
+			this.broadcast(TODO_CHANNEL, UP_TODO, this.getValue());
+		});
 	}
 
-	kill() {
-		this.broadcast(TODO_CHANNEL, RMV_TODO, this.getValue());
+	kill(event) {
+		if (event.detail === 1) {
+			this.broadcast(TODO_CHANNEL, RMV_TODO, this.getValue());
+		}
 	}
 
 	edit() {
-		this.inEditMode = true;
+		this.inEditMode = !this.inEditMode;
 		this.origEditText = this.getValue().title;
 	}
 
-	cancelEdit() {
-		this.getValue().title = this.origEditText;
-		this.doneEdit();
-	}
-
-	doneEdit() {
-		this.origEditText = "";
-		this.inEditMode = false;
-	}
-
-	finishEdit(event) {
-		switch (event.keyCode) {
-			case KEY_ENTER:
-				event.target.blur();
-				this.getLogger().ifDebug(() => `New todo text: ${ this.getValue().title }`);
-				break;
-			case KEY_ESC:
-				this.cancelEdit();
-				break;
+	tryUpdate(event) {
+		if (event.code === KEY_ENTER) {
+			this.inEditMode = !this.inEditMode;
+			this.origEditText = "";
+			this.broadcast(TODO_CHANNEL, UP_TODO, this.getValue());
 		}
 	}
 
@@ -176,6 +181,6 @@ builder("body>div#appbody", PROPERTIES)
 	.withPrototype(TodoItem.name, TodoItem)
 	.withInitializer(stage => {
 		stage.setComponentFromRegistry(App.name);
-	})
+})
 	.build()
 	.start();
