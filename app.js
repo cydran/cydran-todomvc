@@ -24,13 +24,12 @@ const PROPERTIES = {
 	[DATA_SRLZ_LVL]: Level[Level.TRACE]
 };
 
-const KEY_ENTER = 13;
-const KEY_ESC = 27;
+const KEY_ENTER = 'Enter';
+const KEY_ESC = 'Escape';
 const TODO_CHANNEL = "TODOS";
 const RMV_TODO = "removeTodo";
-const ADD_TODO = "addTodo";
 const UP_TODO = "updateTodo";
-const template = (id) => document.querySelector(`template[id=${ id }]`).innerHTML.trim();
+const template = (id) => document.querySelector(`template[id=${id}]`).innerHTML.trim();
 
 class TodoListItem {
 	constructor(id) {
@@ -58,7 +57,6 @@ class App extends Component {
 
 		this.$c().onExpressionValueChange("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
 		this.$c().onMessage(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
-		this.$c().onMessage(ADD_TODO).forChannel(TODO_CHANNEL).invoke(this.addTodo);
 		this.$c().onMessage(UP_TODO).forChannel(TODO_CHANNEL).invoke(this.updateTodo);
 	}
 
@@ -77,13 +75,14 @@ class App extends Component {
 	}
 
 	addTodo(event) {
-		if (event.keyCode == KEY_ENTER) {
+		if (event.code == KEY_ENTER) {
 			let newTodo = new TodoListItem(uuidV4());
 			newTodo.title = this.newTodoValue;
 			event.target.value = "";
 			this.todos.push(newTodo);
-			newTodo = this.todos[this.todos.length - 1];
 			this.repo.add(newTodo);
+		} else if (event.code == KEY_ESC) {
+			event.target.value = "";
 		}
 	}
 
@@ -119,6 +118,7 @@ class TodoItem extends Component {
 		super(template(TodoItem.name.toLowerCase()));
 		this.inEditMode = false;
 		this.origEditText = "";
+		this.dirty = false;
 
 		this.$c().onExpressionValueChange("v().completed", () => {
 			this.$c().send(UP_TODO, this.$c().getValue()).onChannel(TODO_CHANNEL).toContext();
@@ -126,43 +126,33 @@ class TodoItem extends Component {
 	}
 
 	kill(event) {
-		if(event.detail == 1) {
+		if (event.detail == 1) {
 			this.$c().send(RMV_TODO, this.$c().getValue()).onChannel(TODO_CHANNEL).toContext();
 		}
 	}
 
 	edit() {
-		this.invertMode();
+		this.inEditMode = !this.inEditMode;
+		this.origEditText = this.$c().getValue().title;
 	}
 
-	doneEdit(event) {
-		this.invertMode();
-		switch (event.keyCode) {
-			case KEY_ENTER:
-				event.target.blur();
-				this.$c().getLogger().ifDebug(() => `Updated todo text: ${ this.$c().getValue().title }`);
-				this.repo.update(this.$c().getValue());
-				break;
-			case KEY_ESC:
-				this.$c().getValue().title = this.origEditText;
-				break;
+	tryUpdate(event) {
+		if (event.code == KEY_ENTER) {
+			this.inEditMode = !this.inEditMode;
+			this.origEditText = "";
+			this.$c().send(UP_TODO, this.$c().getValue()).onChannel(TODO_CHANNEL).toContext();
 		}
 	}
 
 	isComplete() {
 		this.$c().getValue().completed = !this.$c().getValue().completed;
 	}
-
-	invertMode() {
-		this.inEditMode = !this.inEditMode;
-		this.origEditText = this.origEditText.length === 0 ? this.$c().getValue().title: "";
-	}
 }
 
 const stage = new StageImpl("body>div#appbody", PROPERTIES);
 stage.addPreInitializer(stage => {
-	stage.getScope().add("pluralize", (str, cnt) => (cnt !== 1 ? `${ str }s` : str));
-	stage.registerSingleton(TodoRepo.name, TodoRepo, args().withLogger(`${ App.name }[Repo]`, stage.getProperties().getAsString(DATA_SRLZ_LVL)).build());
+	stage.getScope().add("pluralize", (str, cnt) => (cnt !== 1 ? `${str}s` : str));
+	stage.registerSingleton(TodoRepo.name, TodoRepo, args().withLogger(`${App.name}[Repo]`, stage.getProperties().getAsString(DATA_SRLZ_LVL)).build());
 	stage.registerPrototype(TodoItem.name, TodoItem);
 });
 stage.addInitializer(stage => {

@@ -32,7 +32,7 @@
 			<section class="main" c-if="m().todos.length > 0">
 				<input id="toggle-all" class="toggle-all" type="checkbox" c-onclick="m().toggleAll()">
 				<label for="toggle-all">Mark all as complete</label>
-				<form name="todolist">
+				<form name="todolist" onsubmit="return false">
 					<ul class="todo-list" c-each="m().filtered.items()" c-each-mode="none">
 						<template c-type="item" c-component="TodoItem"></template>
 					</ul>
@@ -58,7 +58,7 @@
 				<label c-ondblclick="m().edit()">{{v().title}}</label>
 				<button class="destroy" c-onclick="m().kill(p().$event)"></button>
 			</div>
-			<input class="edit" type="text" c-model="v().title" c-onblur="m().doneEdit()" c-force-focus="m().inEditMode" />
+			<input class="edit" type="text" c-model="v().title" c-onkeyup="m().tryUpdate(p().$event)" c-force-focus="m().inEditMode" />
 		</li>
 	</template>
 </html>
