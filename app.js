@@ -30,7 +30,7 @@ const TODO_CHANNEL = "TODOS";
 const RMV_TODO = "removeTodo";
 const ADD_TODO = "addTodo";
 const UP_TODO = "updateTodo";
-const template = (id) => document.querySelector(`template[id=${ id }]`).innerHTML.trim();
+const template = (id) => document.querySelector(`template[id=${id}]`).innerHTML.trim();
 
 class TodoListItem {
 	constructor(id) {
@@ -58,7 +58,6 @@ class App extends Component {
 
 		this.$c().onExpressionValueChange("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
 		this.$c().onMessage(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
-		this.$c().onMessage(ADD_TODO).forChannel(TODO_CHANNEL).invoke(this.addTodo);
 		this.$c().onMessage(UP_TODO).forChannel(TODO_CHANNEL).invoke(this.updateTodo);
 	}
 
@@ -138,27 +137,11 @@ class TodoItem extends Component {
 		this.origEditText = this.$c().getValue().title;
 	}
 
-	cancelEdit() {
-		this.$c().getValue().title = this.origEditText;
-		this.doneEdit();
-	}
-
-	doneEdit() {
-		this.inEditMode = false;
-		this.origEditText = "";
-	}
-
-	doneEdit(event) {
-		this.invertMode();
-		switch (event.keyCode) {
-			case KEY_ENTER:
-				event.target.blur();
-				this.$c().getLogger().ifDebug(() => `Updated todo text: ${ this.$c().getValue().title }`);
-				this.repo.update(this.$c().getValue());
-				break;
-			case KEY_ESC:
-				this.$c().getValue().title = this.origEditText;
-				break;
+	tryUpdate(event) {
+		if (event.code == KEY_ENTER) {
+			this.inEditMode = !this.inEditMode;
+			this.origEditText = "";
+			this.$c().send(UP_TODO, this.$c().getValue()).onChannel(TODO_CHANNEL).toContext();
 		}
 	}
 
@@ -169,8 +152,8 @@ class TodoItem extends Component {
 
 const stage = new StageImpl("body>div#appbody", PROPERTIES);
 stage.addPreInitializer(stage => {
-	stage.getScope().add("pluralize", (str, cnt) => (cnt !== 1 ? `${ str }s` : str));
-	stage.registerSingleton(TodoRepo.name, TodoRepo, args().withLogger(`${ App.name }[Repo]`, stage.getProperties().getAsString(DATA_SRLZ_LVL)).build());
+	stage.getScope().add("pluralize", (str, cnt) => (cnt !== 1 ? `${str}s` : str));
+	stage.registerSingleton(TodoRepo.name, TodoRepo, args().withLogger(`${App.name}[Repo]`, stage.getProperties().getAsString(DATA_SRLZ_LVL)).build());
 	stage.registerPrototype(TodoItem.name, TodoItem);
 });
 stage.addInitializer(stage => {
