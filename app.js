@@ -2,7 +2,6 @@ import TodoRepo from "./data/repo_localstorage.js";
 // import {argumentsBuilder as args, PropertyKeys, Level, StageImpl, uuidV4, Component} from "./node_modules/cydran/dist/cydran.js";
 
 const args = cydran.argumentsBuilder;
-const builder = cydran.builder;
 const Component = cydran.Component;
 const PropertyKeys = cydran.PropertyKeys;
 const Level = cydran.Level;
