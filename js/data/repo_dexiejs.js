@@ -52,10 +52,7 @@ class TodoRepo {
 	}
 
 	getAll() {
-		this.db[TBL_TD].toArray().then(resp => {
-			this.logr.ifTrace(() => `get all todos - length: ${ resp.length }`);
-			return resp;
-		}).catch(err => {
+		return this.db[TBL_TD].toArray().catch(err => {
 			this.logr.ifError(() => err);
 			return [];
 		});

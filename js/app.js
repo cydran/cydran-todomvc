@@ -47,9 +47,7 @@ class App extends Component {
 		this.who = who || "";
 		this.newIds = newIds;
 		this.todos = [];
-		this.$c().onExpressionValueChange("m().todos", () => {
-			this.computeRemaining();
-		});
+		this.$c().onExpressionValueChange("m().todos", () => { this.computeRemaining(); });
 
 		this.remaining = 0;
 		this.togAllDoneOrNot = false;
@@ -62,7 +60,9 @@ class App extends Component {
 
 	onMount() {
 		this.repo = this.$c().getObject(TodoRepo.name);
-		this.todos = this.repo.getAll();
+		this.todos = this.repo.getAll().then(result => {
+			return result;
+		});
 		this.filterVisiblity = this.repo.getVisibleState();
 		this.filtered = this.$c().createFilter("m().todos")
 			.withPredicate("p(0) === 'all' || !v().completed && p(0) === 'active' || v().completed && p(0) === 'completed'", "m().filterVisiblity")
