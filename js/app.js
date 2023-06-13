@@ -1,4 +1,4 @@
-import TodoRepo from "./data/repo_localstorage.js";
+import TodoRepo from "./data/repo_dexiejs.js";
 // import {argumentsBuilder as args, PropertyKeys, Level, StageImpl, uuidV4, Component} from "./node_modules/cydran/dist/cydran.js";
 
 const args = cydran.argumentsBuilder;
@@ -36,6 +36,7 @@ class TodoListItem {
 		this.id = id;
 		this.title = null;
 		this.completed = false;
+		this.created = new Date();
 	}
 }
 
@@ -45,15 +46,14 @@ class App extends Component {
 
 		this.who = who || "";
 		this.newIds = newIds;
-
+		this.todos = [];
+		this.$c().onExpressionValueChange("m().todos", () => {
+			this.computeRemaining();
+		});
 
 		this.remaining = 0;
 		this.togAllDoneOrNot = false;
 		this.newTodoValue = "";
-
-		this.$c().onExpressionValueChange("m().todos", () => {
-			this.computeRemaining();
-		});
 
 		this.$c().onExpressionValueChange("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
 		this.$c().onMessage(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
@@ -67,7 +67,6 @@ class App extends Component {
 		this.filtered = this.$c().createFilter("m().todos")
 			.withPredicate("p(0) === 'all' || !v().completed && p(0) === 'active' || v().completed && p(0) === 'completed'", "m().filterVisiblity")
 			.build();
-		this.computeRemaining();
 	}
 
 	computeRemaining() {

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "No tests yet configured...\n\n; exit 0",
     "clean": "rm -f *.tgz *.tar.gz",
-		"serve": "npx http-server ./ -p 8181 -g -o"
+    "serve": "npx http-server ./ -p 8181 -g -o"
   },
   "keywords": [
     "todomvc",
@@ -22,6 +22,7 @@
   "homepage": "https://github.com/cydran/cydran-todomvc#readme",
   "dependencies": {
     "cydran": "0.2.1",
+    "dexie": "^3.2.4",
     "todomvc-app-css": "2.4.2",
     "todomvc-common": "1.0.5"
   },
