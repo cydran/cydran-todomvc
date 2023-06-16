@@ -1,10 +1,15 @@
 import Dexie from "../../node_modules/dexie/dist/dexie.mjs";
-import MsgType from "./msgs.js";
 
 const DB_NAME = "todolist";
 const TBL_TD = "todos";
 const TBL_TS = "state";
 const TDL_STATE = "visibility";
+
+const MsgType = {
+	CHAN: "DATA",
+	ALL: "GetAll",
+	GS: "GetState"
+}
 
 const SCHEMA = {
 	[TBL_TD]: `id, title, completed, created`,
@@ -75,4 +80,4 @@ class TodoRepo {
 	}
 }
 
-export default TodoRepo;
+export { TodoRepo, MsgType };

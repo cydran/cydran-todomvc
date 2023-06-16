@@ -1,5 +1,4 @@
-import TodoRepo from "./data/repo_dexiejs.js";
-import MsgType from "./data/msgs.js";
+import { TodoRepo, MsgType } from "./data/repo_dexiejs.js";
 // import {argumentsBuilder as args, PropertyKeys, Level, StageImpl, uuidV4, Component} from "../node_modules/cydran/dist/cydran.js";
 
 const args = cydran.argumentsBuilder;
