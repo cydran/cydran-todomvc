@@ -1,5 +1,6 @@
 import TodoRepo from "./data/repo_dexiejs.js";
-// import {argumentsBuilder as args, PropertyKeys, Level, StageImpl, uuidV4, Component} from "./node_modules/cydran/dist/cydran.js";
+import MsgType from "./data/msgs.js";
+// import {argumentsBuilder as args, PropertyKeys, Level, StageImpl, uuidV4, Component} from "../node_modules/cydran/dist/cydran.js";
 
 const args = cydran.argumentsBuilder;
 const Component = cydran.Component;
@@ -19,7 +20,7 @@ const PROPERTIES = {
 	[PropertyKeys.CYDRAN_LOG_LABEL]: "ctdmvc",
 	[PropertyKeys.CYDRAN_LOG_LABEL_VISIBLE]: false,
 	[PropertyKeys.CYDRAN_LOG_PREAMBLE_ORDER]: "time:level:name",
-	[PERSONALIZED]: "",
+	[PERSONALIZED]: "burk's",
 	[DATA_SRLZ_LVL]: Level[Level.TRACE]
 };
 
@@ -56,14 +57,19 @@ class App extends Component {
 		this.$c().onExpressionValueChange("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
 		this.$c().onMessage(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
 		this.$c().onMessage(UP_TODO).forChannel(TODO_CHANNEL).invoke(this.updateTodo);
+
+		this.$c().onMessage(MsgType.ALL).forChannel(MsgType.CHAN).invoke((data) => {
+			this.todos = data;
+		});
+		this.$c().onMessage(MsgType.GS).forChannel(MsgType.CHAN).invoke((data) => {
+			this.filterVisiblity = data;
+		});
 	}
 
 	onMount() {
 		this.repo = this.$c().getObject(TodoRepo.name);
-		this.todos = this.repo.getAll().then(result => {
-			return result;
-		});
-		this.filterVisiblity = this.repo.getVisibleState();
+		this.repo.getVisibleState();
+		this.repo.getAll();
 		this.filtered = this.$c().createFilter("m().todos")
 			.withPredicate("p(0) === 'all' || !v().completed && p(0) === 'active' || v().completed && p(0) === 'completed'", "m().filterVisiblity")
 			.build();
@@ -151,7 +157,11 @@ class TodoItem extends Component {
 const stage = new StageImpl("body>div#appbody", PROPERTIES);
 stage.addPreInitializer(stage => {
 	stage.getScope().add("pluralize", (str, cnt) => (cnt !== 1 ? `${str}s` : str));
-	stage.registerSingleton(TodoRepo.name, TodoRepo, args().withLogger(`${App.name}[Repo]`, stage.getProperties().getAsString(DATA_SRLZ_LVL)).build());
+	stage.registerSingleton(TodoRepo.name, TodoRepo, args()
+		.withLogger(`${App.name}[Repo]`, stage.getProperties().getAsString(DATA_SRLZ_LVL))
+		.withPubSub()
+		.build()
+	);
 	stage.registerPrototype(TodoItem.name, TodoItem);
 });
 stage.addInitializer(stage => {
