@@ -18,8 +18,8 @@ const PROPERTIES = {
 	[PropertyKeys.CYDRAN_LOG_LEVEL]: Level[Level.DEBUG],
 	[PropertyKeys.CYDRAN_LOG_LABEL]: "ctdmvc",
 	[PropertyKeys.CYDRAN_LOG_LABEL_VISIBLE]: false,
-	[PropertyKeys.CYDRAN_LOG_PREAMBLE_ORDER]: "time:level:name",
-	[PERSONALIZED]: "burk's",
+	[PropertyKeys.CYDRAN_LOG_PREAMBLE_ORDER]: "level:name",
+	// [PERSONALIZED]: "bill's",
 	[DATA_SRLZ_LVL]: Level[Level.TRACE]
 };
 
@@ -163,6 +163,6 @@ stage.addPreInitializer(stage => {
 	stage.registerPrototype(TodoItem.name, TodoItem);
 });
 stage.addInitializer(stage => {
-	stage.setComponent(new App(PROPERTIES.PERSONALIZED, 11));
+	stage.setComponent(new App(PROPERTIES[PERSONALIZED], 11));
 })
 stage.start();

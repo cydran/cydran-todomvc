@@ -55,16 +55,16 @@ class TodoRepo {
 
 	getAll() {
 		this.db[TBL_TD].toArray().then(async resp => {
-			await this.ps.sendGlobally(MsgType.CHAN, MsgType.ALL, resp);
+			await this.ps.sendGlobally(MSG.CHAN, MSG.ALL, resp);
 			this.logr.ifTrace(() => `get all todos`);
 		}).catch(err => {
-			this.ps.sendToContext(MsgType.CHAN, MsgType.ALL, []);
+			this.ps.sendToContext(MSG.CHAN, MSG.ALL, []);
 		});
 	}
 
 	storeVisibleState(state) {
 		this.db[TBL_TS].put({"id": 1, "value": state}).then(resp => {
-			this.logr.ifTrace(() => `add visibile state`);
+			this.logr.ifTrace(() => `add/update visibile state`);
 		}).catch(err => {
 			this.logr.ifError(() => err);
 		});
@@ -72,10 +72,10 @@ class TodoRepo {
 
 	getVisibleState() {
 		this.db[TBL_TS].get(1).then(async resp => {
-			await this.ps.sendGlobally(MsgType.CHAN, MsgType.GS, resp.value);
+			await this.ps.sendGlobally(MSG.CHAN, MSG.GS, resp.value);
 			this.logr.ifTrace(() => `get visible state`);
 		}).catch(err => {
-			this.ps.sendToContext(MsgType.CHAN, MsgType.GS, DEF_STATE);
+			this.ps.sendToContext(MSG.CHAN, MSG.GS, DEF_STATE);
 		});
 	}
 }
