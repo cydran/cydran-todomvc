@@ -31,6 +31,7 @@
   },
   "bundleDependencies": [
     "cydran",
+    "dexie",
     "todomvc-app-css",
     "todomvc-common"
   ]
