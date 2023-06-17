@@ -1,6 +1,6 @@
 import Dexie from "../../node_modules/dexie/dist/dexie.mjs";
 
-const DB_NAME = "todolist";
+const DB_NAME = "todolist-dexie";
 const TBL_TD = "todos";
 const TBL_TS = "state";
 const TDL_STATE = "visibility";
@@ -38,7 +38,7 @@ class TodoRepo {
 	}
 
 	update(todo) {
-		this.db[TBL_TD].put(todo).then(async resp => { 
+		this.db[TBL_TD].put(todo).then(async resp => {
 			await this.logr.ifTrace(() => `update todo: id = ${ resp }`);
 		}).catch(err => {
 			this.logr.ifError(() => err);
