@@ -27,7 +27,6 @@ const KEY_ENTER = 'Enter';
 const KEY_ESC = 'Escape';
 const TODO_CHANNEL = "TODOS";
 const RMV_TODO = "removeTodo";
-const ADD_TODO = "addTodo";
 const UP_TODO = "updateTodo";
 const template = (id) => document.querySelector(`template[id=${id}]`).innerHTML.trim();
 
