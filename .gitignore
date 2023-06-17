@@ -1,11 +1,10 @@
 .project
-.settings/
-dist/
-node_modules/*
-.cache/*
-node_modules/*
-nbproject/*
 *.swp
 *.tgz
-startup_times.txt
 public/
+.settings/
+dist/
+node_modules/
+.cache/
+node_modules/
+nbproject/
