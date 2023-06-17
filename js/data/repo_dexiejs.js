@@ -5,7 +5,7 @@ const TBL_TD = "todos";
 const TBL_TS = "state";
 const TDL_STATE = "visibility";
 
-const MsgType = {
+const MSG = {
 	CHAN: "DATA",
 	ALL: "GetAll",
 	GS: "GetState"
@@ -80,4 +80,4 @@ class TodoRepo {
 	}
 }
 
-export { TodoRepo, MsgType };
+export { TodoRepo, MSG };

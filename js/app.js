@@ -1,4 +1,4 @@
-import { TodoRepo, MsgType } from "./data/repo_dexiejs.js";
+import { TodoRepo, MSG } from "./data/repo_dexiejs.js";
 // import {argumentsBuilder as args, PropertyKeys, Level, StageImpl, uuidV4, Component} from "../node_modules/cydran/dist/cydran.js";
 
 const args = cydran.argumentsBuilder;
@@ -56,10 +56,10 @@ class App extends Component {
 		this.$c().onMessage(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
 		this.$c().onMessage(UP_TODO).forChannel(TODO_CHANNEL).invoke(this.updateTodo);
 
-		this.$c().onMessage(MsgType.ALL).forChannel(MsgType.CHAN).invoke((data) => {
+		this.$c().onMessage(MSG.ALL).forChannel(MSG.CHAN).invoke((data) => {
 			this.todos = data;
 		});
-		this.$c().onMessage(MsgType.GS).forChannel(MsgType.CHAN).invoke((data) => {
+		this.$c().onMessage(MSG.GS).forChannel(MSG.CHAN).invoke((data) => {
 			this.filterVisiblity = data;
 		});
 	}
