@@ -1,7 +1,9 @@
 import { TodoRepo, MSG } from "./data/repo_dexiejs.js";
-// import {argumentsBuilder as args, PropertyKeys, Level, StageImpl, uuidV4, Component} from "../node_modules/cydran/dist/cydran.js";
+/*
+import {argumentsBuilder as ab, PropertyKeys, Level, StageImpl, uuidV4, Component} from "../node_modules/cydran/dist/cydran.js";
+*/
 
-const args = cydran.argumentsBuilder;
+const ab = cydran.argumentsBuilder;
 const Component = cydran.Component;
 const PropertyKeys = cydran.PropertyKeys;
 const Level = cydran.Level;
@@ -153,16 +155,15 @@ class TodoItem extends Component {
 }
 
 const stage = new StageImpl("body>div#appbody", PROPERTIES);
-stage.addPreInitializer(stage => {
-	stage.getScope().add("pluralize", (str, cnt) => (cnt !== 1 ? `${str}s` : str));
-	stage.registerSingleton(TodoRepo.name, TodoRepo, args()
-		.withLogger(`${App.name}[Repo]`, stage.getProperties().getAsString(DATA_SRLZ_LVL))
+stage.addInitializer(stage => {
+	const ctxt = stage.getContext();
+	ctxt.getScope().add("pluralize", (str, cnt) => (cnt !== 1 ? `${str}s` : str));
+	ctxt.registerSingleton(TodoRepo.name, TodoRepo, ab()
+		.withLogger(`${App.name}[Repo]`, ctxt.getProperties().getAsString(DATA_SRLZ_LVL))
 		.withPubSub()
 		.build()
 	);
-	stage.registerPrototype(TodoItem.name, TodoItem);
-});
-stage.addInitializer(stage => {
+	ctxt.registerPrototype(TodoItem.name, TodoItem);
 	stage.setComponent(new App(PROPERTIES[PERSONALIZED], 11));
 })
 stage.start();
