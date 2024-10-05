@@ -21,16 +21,14 @@
   },
   "homepage": "https://github.com/cydran/cydran-todomvc#readme",
   "dependencies": {
-    "cydran": "0.2.1",
-    "dexie": "^3.2.4",
-    "todomvc-app-css": "^2.4.3",
+    "dexie": "4.0.8",
+    "todomvc-app-css": "2.4.3",
     "todomvc-common": "1.0.5"
   },
   "devDependencies": {
     "http-server": "14.1.1"
   },
   "bundleDependencies": [
-    "cydran",
     "dexie",
     "todomvc-app-css",
     "todomvc-common"

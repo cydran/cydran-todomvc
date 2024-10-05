@@ -1,28 +1,27 @@
 import { TodoRepo, MSG } from "./data/repo_dexiejs.js";
 /*
-import {argumentsBuilder as ab, PropertyKeys, Level, StageImpl, uuidV4, Component} from "../node_modules/cydran/dist/cydran.js";
+import {argumentsBuilder as ab, PropertyKeys, uuidV4, Component} from "../node_modules/cydran/dist/cydran.js";
 */
 
 const ab = cydran.argumentsBuilder;
 const Component = cydran.Component;
+const create = cydran.create;
 const PropertyKeys = cydran.PropertyKeys;
-const Level = cydran.Level;
-const StageImpl = cydran.StageImpl;
 const uuidV4 = cydran.uuidV4;
 
-const PERSONALIZED = "todo.person";
 const DATA_SRLZ_LVL = "data.serialize.level";
+const PERSONALIZED = "todo.person";
+
 const PROPERTIES = {
-	[PropertyKeys.CYDRAN_LOG_LEVEL]: false,
-	// [PropertyKeys.CYDRAN_STRICT_ENABLED]: false,
+	[PropertyKeys.CYDRAN_STRICT_ENABLED]: true,
+	[PERSONALIZED]: "",
 	[PropertyKeys.CYDRAN_STRICT_STARTPHRASE]: "Before software can be reusable it first has to be usable. (Ralph Johnson)",
-	[`${PropertyKeys.CYDRAN_LOG_COLOR_PREFIX}.debug`]: "#00f900",
-	[PropertyKeys.CYDRAN_LOG_LEVEL]: Level[Level.DEBUG],
+	[`${ PropertyKeys.CYDRAN_LOG_COLOR_PREFIX }.debug`]: "#00f900",
+ 	[PropertyKeys.CYDRAN_LOG_LEVEL]: "INFO",
 	[PropertyKeys.CYDRAN_LOG_LABEL]: "ctdmvc",
 	[PropertyKeys.CYDRAN_LOG_LABEL_VISIBLE]: false,
 	[PropertyKeys.CYDRAN_LOG_PREAMBLE_ORDER]: "level:name",
-	// [PERSONALIZED]: "bill's",
-	[DATA_SRLZ_LVL]: Level[Level.TRACE]
+	[DATA_SRLZ_LVL]: "TRACE"
 };
 
 const KEY_ENTER = 'Enter';
@@ -32,7 +31,7 @@ const RMV_TODO = "removeTodo";
 const UP_TODO = "updateTodo";
 const template = (id) => document.querySelector(`template[id=${id}]`).innerHTML.trim();
 
-class TodoListItem {
+class TodoDTO {
 	constructor(id) {
 		this.id = id;
 		this.title = null;
@@ -48,19 +47,24 @@ class App extends Component {
 		this.who = who || "";
 		this.newIds = newIds;
 		this.todos = [];
-		this.$c().onExpressionValueChange("m().todos", () => { this.computeRemaining(); });
+		this.$c().onExpressionValueChange("m().todos", () => {
+			this.computeRemaining();
+		});
 
 		this.remaining = 0;
 		this.togAllDoneOrNot = false;
 		this.newTodoValue = "";
 
 		this.$c().onExpressionValueChange("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
+
 		this.$c().onMessage(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
+
 		this.$c().onMessage(UP_TODO).forChannel(TODO_CHANNEL).invoke(this.updateTodo);
 
 		this.$c().onMessage(MSG.ALL).forChannel(MSG.CHAN).invoke((data) => {
 			this.todos = data;
 		});
+
 		this.$c().onMessage(MSG.GS).forChannel(MSG.CHAN).invoke((data) => {
 			this.filterVisiblity = data;
 		});
@@ -81,11 +85,11 @@ class App extends Component {
 
 	addTodo(event) {
 		if (event.code === KEY_ENTER) {
-			let newTodo = new TodoListItem(uuidV4());
-			newTodo.title = this.newTodoValue;
+			let newTodoItem = new TodoDTO(uuidV4());
+			newTodoItem.title = this.newTodoValue;
 			event.target.value = "";
-			this.todos.push(newTodo);
-			this.repo.add(newTodo);
+			this.todos.push(newTodoItem);
+			this.repo.add(newTodoItem);
 		} else if (event.code === KEY_ESC) {
 			event.target.value = "";
 		}
@@ -108,7 +112,7 @@ class App extends Component {
 			.forEach(itm => {
 				this.repo.remove(itm);
 			});
-		this.todos = this.todos.filter(item => !item.completed);
+		this.repo.getAll();
 	}
 
 	toggleAll() {
@@ -154,16 +158,21 @@ class TodoItem extends Component {
 	}
 }
 
-const stage = new StageImpl("body>div#appbody", PROPERTIES);
-stage.addInitializer(stage => {
-	const ctxt = stage.getContext();
+function rootCapability(ctxt) {
 	ctxt.getScope().add("pluralize", (str, cnt) => (cnt !== 1 ? `${str}s` : str));
 	ctxt.registerSingleton(TodoRepo.name, TodoRepo, ab()
-		.withLogger(`${App.name}[Repo]`, ctxt.getProperties().getAsString(DATA_SRLZ_LVL))
+		.withLogger(`${App.name}.Repo`, ctxt.getProperties().getAsString(DATA_SRLZ_LVL))
 		.withPubSub()
 		.build()
 	);
 	ctxt.registerPrototype(TodoItem.name, TodoItem);
-	stage.setComponent(new App(PROPERTIES[PERSONALIZED], 11));
-})
+}
+
+const stage = create("body>div#appbody", PROPERTIES);
+
+stage.addInitializer(stage => {
+	stage.getContext().configure(rootCapability);
+	stage.setComponent(new App(PROPERTIES[PERSONALIZED] ?? "", 11));
+});
+
 stage.start();

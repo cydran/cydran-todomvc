@@ -5,12 +5,6 @@ const TBL_TD = "todos";
 const TBL_TS = "state";
 const TDL_STATE = "visibility";
 
-const MSG = {
-	CHAN: "DATA",
-	ALL: "GetAll",
-	GS: "GetState"
-}
-
 const SCHEMA = {
 	[TBL_TD]: `id, title, completed, created`,
 	[TBL_TS]: `id, ${TDL_STATE}`
@@ -18,7 +12,13 @@ const SCHEMA = {
 
 const DEF_STATE = "all";
 
-class TodoRepo {
+export const MSG = {
+	CHAN: "DATA",
+	ALL: "GetAll",
+	GS: "GetState"
+}
+
+export class TodoRepo {
 	constructor(logger, pubsub) {
 		this.ps =  pubsub;
 		this.logr = logger;
@@ -79,5 +79,3 @@ class TodoRepo {
 		});
 	}
 }
-
-export { TodoRepo, MSG };
