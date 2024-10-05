@@ -13,11 +13,11 @@ const DATA_SRLZ_LVL = "data.serialize.level";
 const PERSONALIZED = "todo.person";
 
 const PROPERTIES = {
-	[PropertyKeys.CYDRAN_STRICT_ENABLED]: true,
 	[PERSONALIZED]: "",
-	[PropertyKeys.CYDRAN_STRICT_STARTPHRASE]: "Before software can be reusable it first has to be usable. (Ralph Johnson)",
+	[PropertyKeys.CYDRAN_STRICT_ENABLED]: true,
+	[PropertyKeys.CYDRAN_STRICT_STARTPHRASE]: "Optimism is an occupational hazard of programming. Feedback is the treatment. (Kent Beck)",
 	[`${ PropertyKeys.CYDRAN_LOG_COLOR_PREFIX }.debug`]: "#00f900",
- 	[PropertyKeys.CYDRAN_LOG_LEVEL]: "INFO",
+ 	[PropertyKeys.CYDRAN_LOG_LEVEL]: "DEBUG",
 	[PropertyKeys.CYDRAN_LOG_LABEL]: "ctdmvc",
 	[PropertyKeys.CYDRAN_LOG_LABEL_VISIBLE]: false,
 	[PropertyKeys.CYDRAN_LOG_PREAMBLE_ORDER]: "level:name",
