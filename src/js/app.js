@@ -1,4 +1,5 @@
 import { TodoRepo, MSG } from "./data/repo_dexiejs.js";
+import { quotes } from "./data/quotes.js";
 /*
 import {argumentsBuilder as ab, PropertyKeys, uuidV4, Component} from "../node_modules/cydran/dist/cydran.js";
 */
@@ -15,7 +16,7 @@ const PERSONALIZED = "todo.person";
 const PROPERTIES = {
 	[PERSONALIZED]: "",
 	[PropertyKeys.CYDRAN_STRICT_ENABLED]: true,
-	[PropertyKeys.CYDRAN_STRICT_STARTPHRASE]: "Optimism is an occupational hazard of programming. Feedback is the treatment. (Kent Beck)",
+	[PropertyKeys.CYDRAN_STRICT_STARTPHRASE]: "Sometimes it pays to stay in bed on Monday, rather than spending the rest of the week debugging Monday's code. (Dan Salomon)",
 	[`${ PropertyKeys.CYDRAN_LOG_COLOR_PREFIX }.debug`]: "#00f900",
  	[PropertyKeys.CYDRAN_LOG_LEVEL]: "DEBUG",
 	[PropertyKeys.CYDRAN_LOG_LABEL]: "ctdmvc",
@@ -169,7 +170,6 @@ function rootCapability(ctxt) {
 }
 
 const stage = create("body>div#appbody", PROPERTIES);
-
 stage.addInitializer(stage => {
 	stage.getContext().configure(rootCapability);
 	stage.setComponent(new App(PROPERTIES[PERSONALIZED] ?? "", 11));
