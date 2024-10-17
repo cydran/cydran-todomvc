@@ -1,12 +1,11 @@
-import TodoRepo from "./data/repo_localstorage.js";
-// import {argumentsBuilder as args, PropertyKeys, Level, StageImpl, uuidV4, Component} from "./node_modules/cydran/dist/cydran.js";
+import { TodoRepo } from "./data/repo_dexiejs.js";
 
 const args = cydran.argumentsBuilder;
-const builder = cydran.builder;
 const Component = cydran.Component;
 const PropertyKeys = cydran.PropertyKeys;
 const Level = cydran.Level;
-const enumKeys = cydran.enumKeys;
+const StageImpl = cydran.StageImpl;
+const uuidV4 = cydran.uuidV4;
 
 const PERSONALIZED = "todo.person";
 const DATA_SRLZ_LVL = "data.serialize.level";
@@ -30,32 +29,6 @@ const RMV_TODO = "removeTodo";
 const UP_TODO = "updateTodo";
 const template = (id) => document.querySelector(`template[id=${id}]`).innerHTML.trim();
 
-
-const CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
-const uuidV4 = () => {
-	const chars = CHARS;
-	const uuid = new Array(36);
-	let rnd = 0;
-	let r = null;
-
-	for (let i = 0; i < 36; i++) {
-		if (i === 8 || i === 13 || i === 18 || i === 23) {
-			uuid[i] = '-';
-		} else if (i === 14) {
-			uuid[i] = '4';
-		} else {
-			if (rnd <= 0x02) {
-				rnd = 0x2000000 + (Math.random() * 0x1000000) | 0;
-			}
-
-			r = rnd & 0xf;
-			rnd = rnd >> 4;
-			uuid[i] = chars[(i === 19) ? (r & 0x3) | 0x8 : r];
-		}
-	}
-	return uuid.join('');
-}
-
 class TodoListItem {
 	constructor(id) {
 		this.id = id;
@@ -76,20 +49,20 @@ class App extends Component {
 		this.togAllDoneOrNot = false;
 		this.newTodoValue = "";
 
-		this.watch("m().todos", () => {
+		this.$c().onExpressionValueChange("m().todos", () => {
 			this.computeRemaining();
 		});
 
-		this.watch("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
-		this.on(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
-		this.on(UP_TODO).forChannel(TODO_CHANNEL).invoke(this.updateTodo);
+		this.$c().onExpressionValueChange("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
+		this.$c().onMessage(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
+		this.$c().onMessage(UP_TODO).forChannel(TODO_CHANNEL).invoke(this.updateTodo);
 	}
 
 	onMount() {
-		this.repo = this.get(TodoRepo.name);
+		this.repo = this.$c().getObject(TodoRepo.name);
 		this.todos = this.repo.getAll();
 		this.filterVisiblity = this.repo.getVisibleState();
-		this.filtered = this.withFilter("m().todos")
+		this.filtered = this.$c().createFilter("m().todos")
 			.withPredicate("p(0) === 'all' || !v().completed && p(0) === 'active' || v().completed && p(0) === 'completed'", "m().filterVisiblity")
 			.build();
 		this.computeRemaining();
@@ -100,13 +73,13 @@ class App extends Component {
 	}
 
 	addTodo(event) {
-		if (event.code === KEY_ENTER) {
+		if (event.code == KEY_ENTER) {
 			let newTodo = new TodoListItem(uuidV4());
 			newTodo.title = this.newTodoValue;
 			event.target.value = "";
 			this.todos.push(newTodo);
 			this.repo.add(newTodo);
-		} else if (event.code === KEY_ESC) {
+		} else if (event.code == KEY_ESC) {
 			event.target.value = "";
 		}
 	}
@@ -134,7 +107,7 @@ class App extends Component {
 	toggleAll() {
 		this.todos.forEach(todo => todo.completed = !this.togAllDoneOrNot);
 		this.togAllDoneOrNot = !this.togAllDoneOrNot;
-		this.getLogger().ifDebug(() => `all items marked done: ${this.togAllDoneOrNot}`);
+		this.$c().getLogger().ifDebug(() => `all items marked done: ${this.togAllDoneOrNot}`);
 	}
 }
 
@@ -145,42 +118,42 @@ class TodoItem extends Component {
 		this.origEditText = "";
 		this.dirty = false;
 
-		this.watch("v().completed", () => {
-			this.broadcast(TODO_CHANNEL, UP_TODO, this.getValue());
+		this.$c().onExpressionValueChange("v().completed", () => {
+			this.$c().send(UP_TODO, this.$c().getValue()).onChannel(TODO_CHANNEL).toContext();
 		});
 	}
 
 	kill(event) {
-		if (event.detail === 1) {
-			this.broadcast(TODO_CHANNEL, RMV_TODO, this.getValue());
+		if (event.detail == 1) {
+			this.$c().send(RMV_TODO, this.$c().getValue()).onChannel(TODO_CHANNEL).toContext();
 		}
 	}
 
 	edit() {
 		this.inEditMode = !this.inEditMode;
-		this.origEditText = this.getValue().title;
+		this.origEditText = this.$c().getValue().title;
 	}
 
 	tryUpdate(event) {
-		if (event.code === KEY_ENTER) {
+		if (event.code == KEY_ENTER) {
 			this.inEditMode = !this.inEditMode;
 			this.origEditText = "";
-			this.broadcast(TODO_CHANNEL, UP_TODO, this.getValue());
+			this.$c().send(UP_TODO, this.$c().getValue()).onChannel(TODO_CHANNEL).toContext();
 		}
 	}
 
 	isComplete() {
-		this.getValue().completed = !this.getValue().completed;
+		this.$c().getValue().completed = !this.$c().getValue().completed;
 	}
 }
 
-builder("body>div#appbody", PROPERTIES)
-	.withScopeItem("pluralize", (str, cnt) => (cnt !== 1 ? `${ str }s` : str))
-	.withSingleton(TodoRepo.name, TodoRepo, args().withLogger(`${ App.name }[Repo]`, Level[Level.TRACE]).build())
-	.withPrototype(App.name, App, args().withProperty(PERSONALIZED).withInstanceId(11).build())
-	.withPrototype(TodoItem.name, TodoItem)
-	.withInitializer(stage => {
-		stage.setComponentFromRegistry(App.name);
+const stage = new StageImpl("body>div#appbody", PROPERTIES);
+stage.addPreInitializer(stage => {
+	stage.getScope().add("pluralize", (str, cnt) => (cnt !== 1 ? `${str}s` : str));
+	stage.registerSingleton(TodoRepo.name, TodoRepo, args().withLogger(`${App.name}[Repo]`, stage.getProperties().getAsString(DATA_SRLZ_LVL)).build());
+	stage.registerPrototype(TodoItem.name, TodoItem);
+});
+stage.addInitializer(stage => {
+	stage.setComponent(new App(PROPERTIES.PERSONALIZED, 11));
 })
-	.build()
-	.start();
+stage.start();
