@@ -14,7 +14,7 @@ const DATA_SRLZ_LVL = "data.serialize.level";
 const PERSONALIZED = "todo.person";
 
 const PROPERTIES = {
-	[PERSONALIZED]: "",
+	[PERSONALIZED]: EMPTY_STR,
 	[PropertyKeys.CYDRAN_STRICT_ENABLED]: true,
 	[PropertyKeys.CYDRAN_STRICT_STARTPHRASE]: "Sometimes it pays to stay in bed on Monday, rather than spending the rest of the week debugging Monday's code. (Dan Salomon)",
 	[`${ PropertyKeys.CYDRAN_LOG_COLOR_PREFIX }.debug`]: "#00f900",
@@ -25,11 +25,13 @@ const PROPERTIES = {
 	[DATA_SRLZ_LVL]: "TRACE"
 };
 
-const KEY_ENTER = 'Enter';
-const KEY_ESC = 'Escape';
+const KEY_ENTER = "Enter";
+const KEY_ESC = "Escape";
 const TODO_CHANNEL = "TODOS";
 const RMV_TODO = "removeTodo";
 const UP_TODO = "updateTodo";
+const EMPTY_STR = "";
+
 const template = (id) => document.querySelector(`template[id=${id}]`).innerHTML.trim();
 
 class TodoDTO {
@@ -45,7 +47,7 @@ class App extends Component {
 	constructor(who, newIds) {
 		super(template(App.name.toLowerCase()));
 
-		this.who = who || "";
+		this.who = who || EMPTY_STR;
 		this.newIds = newIds;
 		this.todos = [];
 		this.$c().onExpressionValueChange("m().todos", () => {
@@ -54,7 +56,7 @@ class App extends Component {
 
 		this.remaining = 0;
 		this.togAllDoneOrNot = false;
-		this.newTodoValue = "";
+		this.newTodoValue = EMPTY_STR;
 
 		this.$c().onExpressionValueChange("m().filterVisiblity", () => this.repo.storeVisibleState(this.filterVisiblity));
 
@@ -88,11 +90,11 @@ class App extends Component {
 		if (event.code === KEY_ENTER) {
 			let newTodoItem = this.getContext().get(TodoDTO.name);
 			newTodoItem.title = this.newTodoValue;
-			event.target.value = "";
+			event.target.value = EMPTY_STR;
 			this.todos.push(newTodoItem);
 			this.repo.add(newTodoItem);
 		} else if (event.code === KEY_ESC) {
-			event.target.value = "";
+			event.target.value = EMPTY_STR;
 		}
 	}
 
@@ -127,7 +129,7 @@ class TodoItem extends Component {
 	constructor() {
 		super(template(TodoItem.name.toLowerCase()));
 		this.inEditMode = false;
-		this.origEditText = "";
+		this.origEditText = EMPTY_STR;
 		this.dirty = false;
 
 		this.$c().onExpressionValueChange("v().completed", () => {
@@ -149,7 +151,7 @@ class TodoItem extends Component {
 	tryUpdate(event) {
 		if (event.code == KEY_ENTER) {
 			this.inEditMode = !this.inEditMode;
-			this.origEditText = "";
+			this.origEditText = EMPTY_STR;
 			this.$c().send(UP_TODO, this.$c().getValue()).onChannel(TODO_CHANNEL).toContext();
 		}
 	}
@@ -177,7 +179,7 @@ quotes.forEach(q => {
 const stage = create("body>div#appbody", PROPERTIES);
 stage.addInitializer(stage => {
 	stage.getContext().configure(rootCapability);
-	stage.setComponent(new App(PROPERTIES[PERSONALIZED] ?? "", 11));
+	stage.setComponent(new App(PROPERTIES[PERSONALIZED] ?? EMPTY_STR, 11));
 });
 
 stage.start();
