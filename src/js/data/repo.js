@@ -10,27 +10,27 @@ export class TodoRepo {
 	add(todo) {
 		todo.created = new Date();
 		this.repo.setItem(todo.id, JSON.stringify(todo));
-		this.logr.ifTrace(() => `created todo: id = ${ todo.id }`);
+		this.logr.ifTrace(() => `created todo - id: ${ todo.id }`);
 	}
 
 	update(todo) {
 		todo.updated = new Date();
 		this.repo.setItem(todo.id, JSON.stringify(todo));
-		this.logr.ifTrace(() => `updated todo: id = ${ todo.id }`);
+		this.logr.ifTrace(() => `updated todo - id: ${ todo.id }`);
 	}
 
 	remove(todo) {
 		this.repo.removeItem(todo.id);
-		this.logr.ifTrace(() => `removed todo: id = ${ todo.id }`);
+		this.logr.ifTrace(() => `removed todo - id: ${ todo.id }`);
 	}
 
 	getAll() {
-		this.logr.ifTrace(() => `get all todos`);
 		const retval = [];
 		Object.keys(this.repo).filter((k) => k != vStateKey)
 			.forEach(k => {
 				retval.push(JSON.parse(this.repo.getItem(k)));
 			});
+		this.logr.ifTrace(() => `retrieved all todos`);
 		return retval;
 	}
 
@@ -40,7 +40,7 @@ export class TodoRepo {
 	}
 
 	getVisibleState() {
-		this.logr.ifTrace(() => `get visible state`);
+		this.logr.ifTrace(() => `retrieve visible state`);
 		return this.repo.getItem(vStateKey) || defaultState;
 	}
 }
