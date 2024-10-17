@@ -1,4 +1,5 @@
 import { TodoRepo, MSG } from "./data/repo.js";
+import { TodoEntity } from "./data/TodoEntity.js";
 
 // import { quotes } from "./data/quotes.js";
 /*
@@ -33,15 +34,6 @@ const PROPERTIES = {
 };
 
 const template = (id) => document.querySelector(`template[id=${id}]`).innerHTML.trim();
-
-class TodoDTO {
-	constructor(id) {
-		this.id = id;
-		this.title = null;
-		this.completed = false;
-		this.created = new Date();
-	}
-}
 
 class App extends Component {
 	constructor(who, newIds) {
@@ -88,7 +80,7 @@ class App extends Component {
 
 	addTodo(event) {
 		if (event.code === KEY_ENTER) {
-			let newTodoItem = this.getContext().get(TodoDTO.name);
+			let newTodoItem = this.getContext().get(TodoEntity.name);
 			newTodoItem.title = this.newTodoValue;
 			event.target.value = EMPTY_STR;
 			this.todos.push(newTodoItem);
@@ -163,7 +155,7 @@ class TodoItem extends Component {
 
 function rootCapability(ctxt) {
 	ctxt.getScope().add("pluralize", (str, cnt) => (cnt !== 1 ? `${str}s` : str));
-	ctxt.registerPrototype(TodoDTO.name, TodoDTO, ab().withFunction(self.crypto.randomUUID))
+	ctxt.registerPrototype(TodoEntity.name, TodoEntity, ab().withFunction(self.crypto.randomUUID))
 	ctxt.registerSingleton(TodoRepo.name, TodoRepo, ab()
 		.withLogger(`${App.name}.Repo`, ctxt.getProperties().getAsString(DATA_SRLZ_LVL))
 		.withPubSub()
