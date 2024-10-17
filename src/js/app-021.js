@@ -5,7 +5,6 @@ const builder = cydran.builder;
 const Component = cydran.Component;
 const PropertyKeys = cydran.PropertyKeys;
 const Level = cydran.Level;
-const uuidV4 = cydran.uuidV4;
 
 const PERSONALIZED = "todo.person";
 const DATA_SRLZ_LVL = "data.serialize.level";
@@ -31,7 +30,7 @@ const template = (id) => document.querySelector(`template[id=${id}]`).innerHTML.
 
 class TodoListItem {
 	constructor(id) {
-		this.id = id;
+		this.id = id ?? Math.round(Math.random() * 1000000000);
 		this.title = null;
 		this.completed = false;
 	}
@@ -74,7 +73,7 @@ class App extends Component {
 
 	addTodo(event) {
 		if (event.code === KEY_ENTER) {
-			let newTodo = new TodoListItem(uuidV4());
+			let newTodo = new TodoListItem(null);
 			newTodo.title = this.newTodoValue;
 			event.target.value = "";
 			this.todos.push(newTodo);
