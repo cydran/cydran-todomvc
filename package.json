@@ -7,6 +7,7 @@
     "test": "No tests yet configured...\n\n; exit 0",
     "clean": "rm -f *.tgz *.tar.gz",
     "serve": "npx http-server ./ -p 8181 -g -o"
+    "build": "npm run clean && npx copy-files-from-to --config ./assembly.json",
   },
   "keywords": [
     "todomvc",
@@ -31,6 +32,7 @@
     "todomvc-common"
   ],
   "devDependencies": {
+    "copy-files-from-to": "^3.11.0",
     "rimraf": "^6.0.1"
   }
 }
