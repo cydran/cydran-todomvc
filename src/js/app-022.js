@@ -8,7 +8,6 @@ const ab = cydran.argumentsBuilder;
 const Component = cydran.Component;
 const create = cydran.create;
 const PropertyKeys = cydran.PropertyKeys;
-const uuidV4 = cydran.uuidV4;
 
 const DATA_SRLZ_LVL = "data.serialize.level";
 const PERSONALIZED = "todo.person";
@@ -86,7 +85,7 @@ class App extends Component {
 
 	addTodo(event) {
 		if (event.code === KEY_ENTER) {
-			let newTodoItem = new TodoDTO(uuidV4());
+			let newTodoItem = this.getContext().get(TodoDTO.name);
 			newTodoItem.title = this.newTodoValue;
 			event.target.value = "";
 			this.todos.push(newTodoItem);
@@ -161,6 +160,7 @@ class TodoItem extends Component {
 
 function rootCapability(ctxt) {
 	ctxt.getScope().add("pluralize", (str, cnt) => (cnt !== 1 ? `${str}s` : str));
+	ctxt.registerPrototype(TodoDTO.name, TodoDTO, ab().withFunction(self.crypto.randomUUID))
 	ctxt.registerSingleton(TodoRepo.name, TodoRepo, ab()
 		.withLogger(`${App.name}.Repo`, ctxt.getProperties().getAsString(DATA_SRLZ_LVL))
 		.withPubSub()
