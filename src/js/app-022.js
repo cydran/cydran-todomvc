@@ -169,6 +169,10 @@ function rootCapability(ctxt) {
 	ctxt.registerPrototype(TodoItem.name, TodoItem);
 }
 
+quotes.forEach(q => {
+	console.log(`${q.quote}\n\t${q.source}`);
+});
+
 const stage = create("body>div#appbody", PROPERTIES);
 stage.addInitializer(stage => {
 	stage.getContext().configure(rootCapability);
@@ -176,3 +180,4 @@ stage.addInitializer(stage => {
 });
 
 stage.start();
+window["stage"] = stage;
