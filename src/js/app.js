@@ -10,6 +10,13 @@ const Component = cydran.Component;
 const create = cydran.create;
 const PropertyKeys = cydran.PropertyKeys;
 
+const KEY_ENTER = "Enter";
+const KEY_ESC = "Escape";
+const TODO_CHANNEL = "TODOS";
+const RMV_TODO = "removeTodo";
+const UP_TODO = "updateTodo";
+const EMPTY_STR = "";
+
 const DATA_SRLZ_LVL = "data.serialize.level";
 const PERSONALIZED = "todo.person";
 
@@ -24,13 +31,6 @@ const PROPERTIES = {
 	[PropertyKeys.CYDRAN_LOG_PREAMBLE_ORDER]: "level:name",
 	[DATA_SRLZ_LVL]: "TRACE"
 };
-
-const KEY_ENTER = "Enter";
-const KEY_ESC = "Escape";
-const TODO_CHANNEL = "TODOS";
-const RMV_TODO = "removeTodo";
-const UP_TODO = "updateTodo";
-const EMPTY_STR = "";
 
 const template = (id) => document.querySelector(`template[id=${id}]`).innerHTML.trim();
 
