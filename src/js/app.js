@@ -1,5 +1,6 @@
-import { TodoRepo, MSG } from "./data/repo_dexiejs.js";
-import { quotes } from "./data/quotes.js";
+import { TodoRepo, MSG } from "./data/repo.js";
+
+// import { quotes } from "./data/quotes.js";
 /*
 import {argumentsBuilder as ab, PropertyKeys, uuidV4, Component} from "../node_modules/cydran/dist/cydran.js";
 */
