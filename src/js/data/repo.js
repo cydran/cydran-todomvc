@@ -3,11 +3,10 @@ import { Dexie } from "./dexie.mjs";
 const DB_NAME = "todolist-dexie";
 const TBL_TD = "todos";
 const TBL_TS = "state";
-const TDL_STATE = "visibility";
 
 const SCHEMA = {
 	[TBL_TD]: `id, title, completed, created`,
-	[TBL_TS]: `id, ${TDL_STATE}`
+	[TBL_TS]: `id, visibility`
 }
 
 const DEF_STATE = "all";
