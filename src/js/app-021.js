@@ -30,7 +30,7 @@ const template = (id) => document.querySelector(`template[id=${id}]`).innerHTML.
 
 class TodoListItem {
 	constructor(id) {
-		this.id = id ?? Math.round(Math.random() * 1000000000);
+		this.id = id ?? self.crypto.randomUUID();
 		this.title = null;
 		this.completed = false;
 	}
@@ -73,7 +73,7 @@ class App extends Component {
 
 	addTodo(event) {
 		if (event.code === KEY_ENTER) {
-			let newTodo = new TodoListItem(null);
+			let newTodo = new TodoListItem();
 			newTodo.title = this.newTodoValue;
 			event.target.value = "";
 			this.todos.push(newTodo);
