@@ -1,7 +1,7 @@
 const vStateKey = "visibility";
 const defaultState = "all";
 
-class TodoRepo {
+export class TodoRepo {
 	constructor(logger) {
 		this.repo = window.localStorage;
 		this.logr = logger;
@@ -43,5 +43,3 @@ class TodoRepo {
 		return this.repo.getItem(vStateKey) || defaultState;
 	}
 }
-
-export default TodoRepo;

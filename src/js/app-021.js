@@ -1,12 +1,11 @@
-import TodoRepo from "./data/repo_localstorage.js";
-// import {argumentsBuilder as args, PropertyKeys, Level, StageImpl, uuidV4, Component} from "./node_modules/cydran/dist/cydran.js";
+import { TodoRepo } from "./data/repo_localstorage.js";
 
 const args = cydran.argumentsBuilder;
 const builder = cydran.builder;
 const Component = cydran.Component;
 const PropertyKeys = cydran.PropertyKeys;
 const Level = cydran.Level;
-const enumKeys = cydran.enumKeys;
+const uuidV4 = cydran.uuidV4;
 
 const PERSONALIZED = "todo.person";
 const DATA_SRLZ_LVL = "data.serialize.level";
@@ -29,32 +28,6 @@ const TODO_CHANNEL = "TODOS";
 const RMV_TODO = "removeTodo";
 const UP_TODO = "updateTodo";
 const template = (id) => document.querySelector(`template[id=${id}]`).innerHTML.trim();
-
-
-const CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
-const uuidV4 = () => {
-	const chars = CHARS;
-	const uuid = new Array(36);
-	let rnd = 0;
-	let r = null;
-
-	for (let i = 0; i < 36; i++) {
-		if (i === 8 || i === 13 || i === 18 || i === 23) {
-			uuid[i] = '-';
-		} else if (i === 14) {
-			uuid[i] = '4';
-		} else {
-			if (rnd <= 0x02) {
-				rnd = 0x2000000 + (Math.random() * 0x1000000) | 0;
-			}
-
-			r = rnd & 0xf;
-			rnd = rnd >> 4;
-			uuid[i] = chars[(i === 19) ? (r & 0x3) | 0x8 : r];
-		}
-	}
-	return uuid.join('');
-}
 
 class TodoListItem {
 	constructor(id) {

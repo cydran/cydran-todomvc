@@ -1,0 +1,34 @@
+{
+	"copyFiles": [
+		{
+			"from": {
+				"default": "node_modules/cydran/dist/cydran.min.js",
+				"development": "node_modules/cydran/dist/cydran.js"
+			},
+			"to": "dist/js/cydran.js"
+		},
+		{
+			"from": "node_modules/todomvc-common/base.css",
+			"to": "dist/css/base.css"
+		},
+		{
+			"from": "node_modules/todomvc-app-css/index.css",
+			"to": "dist/css/index.css"
+		},
+		{
+			"from": "node_modules/todomvc-common/base.js",
+			"to": "dist/js/base.js"
+		},
+		{
+			"from": "src/**",
+			"to": "dist"
+		}
+	],
+	"copyFilesSettings": {
+		"whenFileExists": "notify-about-available-change",
+		"addReferenceToSourceOfOrigin": false,
+		"ignoreDotFilesAndFolders": true,
+		"removeSourceMappingUR": false,
+		"minify": false
+	}
+}
