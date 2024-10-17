@@ -1,4 +1,5 @@
 import { TodoRepo } from "./data/repo.js";
+import { TodoEntity } from "./data/TodoEntity.js";
 
 const args = cydran.argumentsBuilder;
 const builder = cydran.builder;
@@ -29,14 +30,6 @@ const PROPERTIES = {
 };
 
 const template = (id) => document.querySelector(`template[id=${ id }]`).innerHTML.trim();
-
-class TodoListItem {
-	constructor(id) {
-		this.id = id ?? self.crypto.randomUUID();
-		this.title = null;
-		this.completed = false;
-	}
-}
 
 class App extends Component {
 	constructor(who, newIds) {
@@ -75,7 +68,7 @@ class App extends Component {
 
 	addTodo(event) {
 		if (event.code === KEY_ENTER) {
-			let newTodo = new TodoListItem();
+			let newTodo = this.get(TodoEntity.name);
 			newTodo.title = this.newTodoValue;
 			event.target.value = EMPTY_STR;
 			this.todos.push(newTodo);
@@ -153,6 +146,7 @@ builder("body>div#appbody", PROPERTIES)
 	.withSingleton(TodoRepo.name, TodoRepo, args().withLogger(`${ App.name }[Repo]`, Level[Level.TRACE]).build())
 	.withPrototype(App.name, App, args().withProperty(PERSONALIZED).withInstanceId(11).build())
 	.withPrototype(TodoItem.name, TodoItem)
+	.withPrototype(TodoEntity.name, TodoEntity)
 	.withInitializer(stage => {
 		stage.setComponentFromRegistry(App.name);
 })

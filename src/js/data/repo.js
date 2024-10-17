@@ -9,11 +9,13 @@ export class TodoRepo {
 
 	add(todo) {
 		this.logr.ifTrace(() => `add todo: id = ${ todo.id }`);
+		todo.created = new Date();
 		this.repo.setItem(todo.id, JSON.stringify(todo));
 	}
 
 	update(todo) {
 		this.logr.ifTrace(() => `update todo: id = ${ todo.id }`);
+		todo.updated = new Date();
 		this.repo.setItem(todo.id, JSON.stringify(todo));
 	}
 
@@ -25,11 +27,10 @@ export class TodoRepo {
 	getAll() {
 		this.logr.ifTrace(() => `get all todos`);
 		const retval = [];
-		Object.keys(this.repo).forEach(k => {
-			if(k !== vStateKey) {
+		Object.keys(this.repo).filter((k) => k != vStateKey)
+			.forEach(k => {
 				retval.push(JSON.parse(this.repo.getItem(k)));
-			}
-		});
+			});
 		return retval;
 	}
 
