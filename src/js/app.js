@@ -117,7 +117,7 @@ class TodoItem extends Component {
 	}
 
 	kill(event) {
-		if (event.detail === 1) {
+		if (event.code === KEY_ENTER) {
 			this.broadcast(TODO_CHANNEL, RMV_TODO, this.getValue());
 		}
 	}
