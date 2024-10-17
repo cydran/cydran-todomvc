@@ -1,5 +1,5 @@
-const vStateKey = "visibility";
-const defaultState = "all";
+const VSTATE_KEY = "visibility";
+const DEF_STATE = "all";
 
 export class TodoRepo {
 	constructor(logger) {
@@ -9,14 +9,17 @@ export class TodoRepo {
 
 	add(todo) {
 		todo.created = new Date();
-		this.repo.setItem(todo.id, JSON.stringify(todo));
-		this.logr.ifTrace(() => `created todo - id: ${ todo.id }`);
+		this.upsert(todo, "created");
 	}
 
 	update(todo) {
 		todo.updated = new Date();
+		this.upsert(todo, "updated");
+	}
+
+	upsert(todo, act) {
 		this.repo.setItem(todo.id, JSON.stringify(todo));
-		this.logr.ifTrace(() => `updated todo - id: ${ todo.id }`);
+		this.logr.ifTrace(() => `${ act } todo - id: ${ todo.id }`);
 	}
 
 	remove(todo) {
@@ -26,21 +29,21 @@ export class TodoRepo {
 
 	getAll() {
 		const retval = [];
-		Object.keys(this.repo).filter((k) => k != vStateKey)
+		Object.keys(this.repo).filter((k) => k != VSTATE_KEY)
 			.forEach(k => {
 				retval.push(JSON.parse(this.repo.getItem(k)));
 			});
-		this.logr.ifTrace(() => `retrieved all todos`);
+		this.logr.ifTrace(() => retval.length > 0 ? `retrieved all (${ retval.length }) todos` : `no todos available`);
 		return retval;
 	}
 
-	storeVisibleState(state) {
-		this.repo.setItem(vStateKey, state);
-		this.logr.ifTrace(() => `stored visible state: ${ state }`);
+	storeVisibleState(vstate) {
+		this.repo.setItem(VSTATE_KEY, vstate);
+		this.logr.ifTrace(() => `stored visible state: ${ vstate }`);
 	}
 
 	getVisibleState() {
 		this.logr.ifTrace(() => `retrieve visible state`);
-		return this.repo.getItem(vStateKey) || defaultState;
+		return this.repo.getItem(VSTATE_KEY) ?? DEF_STATE;
 	}
 }
