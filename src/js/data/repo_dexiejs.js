@@ -1,4 +1,4 @@
-import { Dexie } from "../../node_modules/dexie/dist/dexie.mjs";
+import { Dexie } from "./dexie.mjs";
 
 const DB_NAME = "todolist-dexie";
 const TBL_TD = "todos";
