@@ -20,10 +20,6 @@
 			"to": "dist/js/base.js"
 		},
 		{
-			"from": "node_modules/dexie/dist/dexie.mjs",
-			"to": "dist/js/data/dexie.mjs"
-		},
-		{
 			"from": "src/**",
 			"to": "dist"
 		}
