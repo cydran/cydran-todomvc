@@ -1,6 +1,4 @@
 .project
-*.swp
-*.tgz
 public/
 .settings/
 dist/
@@ -9,3 +7,5 @@ node_modules/
 node_modules/
 nbproject/
 package-lock.json
+*.swp
+*.tgz
