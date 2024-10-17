@@ -17,16 +17,18 @@ const PROPERTIES = {
 	[PropertyKeys.CYDRAN_LOG_LABEL]: "ctdmvc",
 	[PropertyKeys.CYDRAN_LOG_LABEL_VISIBLE]: false,
 	[PropertyKeys.CYDRAN_LOG_PREAMBLE_ORDER]: "time:level:name",
-	[PERSONALIZED]: "",
+	[PERSONALIZED]: EMPTY_STR,
 	[DATA_SRLZ_LVL]: Level[Level.TRACE]
 };
 
-const KEY_ENTER = 'Enter';
-const KEY_ESC = 'Escape';
+const KEY_ENTER = "Enter";
+const KEY_ESC = "Escape";
 const TODO_CHANNEL = "TODOS";
 const RMV_TODO = "removeTodo";
 const UP_TODO = "updateTodo";
-const template = (id) => document.querySelector(`template[id=${id}]`).innerHTML.trim();
+const EMPTY_STR = "";
+
+const template = (id) => document.querySelector(`template[id=${ id }]`).innerHTML.trim();
 
 class TodoListItem {
 	constructor(id) {
@@ -40,13 +42,13 @@ class App extends Component {
 	constructor(who, newIds) {
 		super(template(App.name.toLowerCase()));
 
-		this.who = who || "";
+		this.who = who || EMPTY_STR;
 		this.newIds = newIds;
 
 
 		this.remaining = 0;
 		this.togAllDoneOrNot = false;
-		this.newTodoValue = "";
+		this.newTodoValue = EMPTY_STR;
 
 		this.watch("m().todos", () => {
 			this.computeRemaining();
@@ -75,11 +77,11 @@ class App extends Component {
 		if (event.code === KEY_ENTER) {
 			let newTodo = new TodoListItem();
 			newTodo.title = this.newTodoValue;
-			event.target.value = "";
+			event.target.value = EMPTY_STR;
 			this.todos.push(newTodo);
 			this.repo.add(newTodo);
 		} else if (event.code === KEY_ESC) {
-			event.target.value = "";
+			event.target.value = EMPTY_STR;
 		}
 	}
 
@@ -114,7 +116,7 @@ class TodoItem extends Component {
 	constructor() {
 		super(template(TodoItem.name.toLowerCase()));
 		this.inEditMode = false;
-		this.origEditText = "";
+		this.origEditText = EMPTY_STR;
 		this.dirty = false;
 
 		this.watch("v().completed", () => {
@@ -136,7 +138,7 @@ class TodoItem extends Component {
 	tryUpdate(event) {
 		if (event.code === KEY_ENTER) {
 			this.inEditMode = !this.inEditMode;
-			this.origEditText = "";
+			this.origEditText = EMPTY_STR;
 			this.broadcast(TODO_CHANNEL, UP_TODO, this.getValue());
 		}
 	}
