@@ -8,20 +8,20 @@ export class TodoRepo {
 	}
 
 	add(todo) {
-		this.logr.ifTrace(() => `add todo: id = ${ todo.id }`);
 		todo.created = new Date();
 		this.repo.setItem(todo.id, JSON.stringify(todo));
+		this.logr.ifTrace(() => `created todo: id = ${ todo.id }`);
 	}
 
 	update(todo) {
-		this.logr.ifTrace(() => `update todo: id = ${ todo.id }`);
 		todo.updated = new Date();
 		this.repo.setItem(todo.id, JSON.stringify(todo));
+		this.logr.ifTrace(() => `updated todo: id = ${ todo.id }`);
 	}
 
 	remove(todo) {
-		this.logr.ifTrace(() => `remove todo: id = ${ todo.id }`);
 		this.repo.removeItem(todo.id);
+		this.logr.ifTrace(() => `removed todo: id = ${ todo.id }`);
 	}
 
 	getAll() {
@@ -35,8 +35,8 @@ export class TodoRepo {
 	}
 
 	storeVisibleState(state) {
-		this.logr.ifTrace(() => `store visible state: ${ state }`);
 		this.repo.setItem(vStateKey, state);
+		this.logr.ifTrace(() => `stored visible state: ${ state }`);
 	}
 
 	getVisibleState() {
