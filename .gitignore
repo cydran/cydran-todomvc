@@ -1,11 +1,12 @@
 .project
-public/
 .settings/
+.cache/
+.vscode/
+.idea/
+public/
 dist/
 node_modules/
-.cache/
 node_modules/
 nbproject/
-package-lock.json
 *.swp
 *.tgz

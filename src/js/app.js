@@ -1,4 +1,4 @@
-import { TodoRepo } from "./data/repo_localstorage.js";
+import { TodoRepo } from "./data/repo.js";
 
 const args = cydran.argumentsBuilder;
 const builder = cydran.builder;
