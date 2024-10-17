@@ -19,7 +19,7 @@ const DATA_SRLZ_LVL = "data.serialize.level";
 const PROPERTIES = {
 	[PropertyKeys.CYDRAN_LOG_LEVEL]: false,
 	// [PropertyKeys.CYDRAN_STRICT_ENABLED]: false,
-	[PropertyKeys.CYDRAN_STRICT_STARTPHRASE]: "Before software can be reusable it first has to be usable. (Ralph Johnson)",
+	[PropertyKeys.CYDRAN_STRICT_STARTPHRASE]: "Sufficiently advanced incompetence is indistinguishable from malice. - Modified Clark's Law by J. Porter Clark",
 	[`${PropertyKeys.CYDRAN_LOG_COLOR_PREFIX}.debug`]: "#00f900",
 	[PropertyKeys.CYDRAN_LOG_LEVEL]: Level[Level.DEBUG],
 	[PropertyKeys.CYDRAN_LOG_LABEL]: "ctdmvc",
@@ -101,7 +101,7 @@ class App extends Component {
 	toggleAll() {
 		this.todos.forEach(todo => todo.completed = !this.togAllDoneOrNot);
 		this.togAllDoneOrNot = !this.togAllDoneOrNot;
-		this.getLogger().ifDebug(() => `all items marked done: ${this.togAllDoneOrNot}`);
+		this.getLogger().ifDebug(() => `all items marked completed: ${this.togAllDoneOrNot}`);
 	}
 }
 
@@ -110,7 +110,6 @@ class TodoItem extends Component {
 		super(template(TodoItem.name.toLowerCase()));
 		this.inEditMode = false;
 		this.origEditText = EMPTY_STR;
-		this.dirty = false;
 
 		this.watch("v().completed", () => {
 			this.broadcast(TODO_CHANNEL, UP_TODO, this.getValue());
