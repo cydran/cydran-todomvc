@@ -1,21 +1,8 @@
 import { Dexie } from "./dexie.mjs";
-
-const DB_NAME = "todolist-dexie";
-const TBL_TD = "todos";
-const TBL_TS = "state";
-
-const SCHEMA = {
-	[TBL_TD]: `id, title, completed, created`,
-	[TBL_TS]: `id, visibility`
-}
+import { DB_NAME, Table, MSG } from "/js/data/constants.js";
+import { SCHEMA } from "/js/data/dexie-setup.js";
 
 const DEF_STATE = "all";
-
-export const MSG = {
-	CHAN: "DATA",
-	ALL: "GetAll",
-	GS: "GetState"
-}
 
 export class TodoRepo {
 	constructor(logger, pubsub) {
@@ -29,7 +16,7 @@ export class TodoRepo {
 	}
 
 	add(todo) {
-		this.db[TBL_TD].add(todo).then(async resp => {
+		this.db[Table.TODO].add(todo).then(async resp => {
 			await this.logr.ifTrace(() => `add todo: id = ${ resp }`);
 		}).catch(err => {
 			this.logr.ifError(() => err);
@@ -37,7 +24,7 @@ export class TodoRepo {
 	}
 
 	update(todo) {
-		this.db[TBL_TD].put(todo).then(async resp => {
+		this.db[Table.TODO].put(todo).then(async resp => {
 			await this.logr.ifTrace(() => `update todo: id = ${ resp }`);
 		}).catch(err => {
 			this.logr.ifError(() => err);
@@ -45,7 +32,7 @@ export class TodoRepo {
 	}
 
 	remove(todo) {
-		this.db[TBL_TD].delete(todo.id).then(async resp => {
+		this.db[Table.TODO].delete(todo.id).then(async resp => {
 			await this.logr.ifTrace(() => `delete todo: id = ${ todo.id }`);
 		}).catch(err => {
 			this.logr.ifError(() => err);
@@ -53,7 +40,7 @@ export class TodoRepo {
 	}
 
 	getAll() {
-		this.db[TBL_TD].toArray().then(async resp => {
+		this.db[Table.TODO].toArray().then(async resp => {
 			await this.ps.sendGlobally(MSG.CHAN, MSG.ALL, resp);
 			this.logr.ifTrace(() => `get all todos`);
 		}).catch(err => {
@@ -62,7 +49,7 @@ export class TodoRepo {
 	}
 
 	storeVisibleState(state) {
-		this.db[TBL_TS].put({"id": 1, "value": state}).then(resp => {
+		this.db[Table.STATE].put({"id": 1, "value": state}).then(resp => {
 			this.logr.ifTrace(() => `add/update visibile state`);
 		}).catch(err => {
 			this.logr.ifError(() => err);
@@ -70,7 +57,7 @@ export class TodoRepo {
 	}
 
 	getVisibleState() {
-		this.db[TBL_TS].get(1).then(async resp => {
+		this.db[Table.STATE].get(1).then(async resp => {
 			await this.ps.sendGlobally(MSG.CHAN, MSG.GS, resp.value);
 			this.logr.ifTrace(() => `get visible state`);
 		}).catch(err => {
