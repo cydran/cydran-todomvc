@@ -12,6 +12,10 @@
 			"to": "dist/css/base.css"
 		},
 		{
+			"from": "node_modules/@nano-sql/core/dist/nano-sql.min.js",
+			"to": "dist/js/nano-sql.min.js"
+		},
+		{
 			"from": "node_modules/todomvc-app-css/index.css",
 			"to": "dist/css/index.css"
 		},
