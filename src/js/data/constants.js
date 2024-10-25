@@ -1,4 +1,6 @@
 export const DB_NAME = "todolist";
+export const VSTATE_KEY = "visibility";
+export const DEF_STATE = "all";
 
 export const Table = {
   TODO: "todos",
