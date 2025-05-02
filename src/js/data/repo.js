@@ -1,4 +1,6 @@
-import { Dexie } from "./dexie.mjs";
+import { Dexie } from "/js/data/dexie.mjs";
+
+const To = cydran.To;
 
 const DB_NAME = "todolist-dexie";
 const TBL_TD = "todos";
@@ -14,12 +16,12 @@ const DEF_STATE = "all";
 export const MSG = {
 	CHAN: "DATA",
 	ALL: "GetAll",
-	GS: "GetState"
+	STATE: "ModState"
 }
 
 export class TodoRepo {
-	constructor(logger, pubsub) {
-		this.ps =  pubsub;
+	constructor(logger, trxmtr) {
+		this.trxmtr = trxmtr;
 		this.logr = logger;
 		this.db = new Dexie(DB_NAME, { autoOpen: false });
 		this.db.version(1).stores(SCHEMA);
@@ -38,7 +40,7 @@ export class TodoRepo {
 
 	update(todo) {
 		this.db[TBL_TD].put(todo).then(async resp => {
-			await this.logr.ifTrace(() => `update todo: id = ${ resp }`);
+			await this.logr.ifTrace(() => `update todo: id = ${ todo.id }`);
 		}).catch(err => {
 			this.logr.ifError(() => err);
 		});
@@ -54,16 +56,16 @@ export class TodoRepo {
 
 	getAll() {
 		this.db[TBL_TD].toArray().then(async resp => {
-			await this.ps.sendGlobally(MSG.CHAN, MSG.ALL, resp);
 			this.logr.ifTrace(() => `get all todos`);
+			await this.trxmtr.send(To.GLOBALLY, MSG.CHAN, MSG.ALL, resp);
 		}).catch(err => {
-			this.ps.sendToContext(MSG.CHAN, MSG.ALL, []);
+			this.trxmtr.send(To.GLOBALLY, MSG.CHAN, MSG.ALL, []);
 		});
 	}
 
 	storeVisibleState(state) {
 		this.db[TBL_TS].put({"id": 1, "value": state}).then(resp => {
-			this.logr.ifTrace(() => `add/update visibile state`);
+			this.logr.ifTrace(() => `add/update visibile state: ${state}`);
 		}).catch(err => {
 			this.logr.ifError(() => err);
 		});
@@ -71,10 +73,10 @@ export class TodoRepo {
 
 	getVisibleState() {
 		this.db[TBL_TS].get(1).then(async resp => {
-			await this.ps.sendGlobally(MSG.CHAN, MSG.GS, resp.value);
+			await this.trxmtr.send(To.GLOBALLY, MSG.CHAN, MSG.STATE, resp.value);
 			this.logr.ifTrace(() => `get visible state`);
 		}).catch(err => {
-			this.ps.sendToContext(MSG.CHAN, MSG.GS, DEF_STATE);
+			this.trxmtr.send(To.GLOBALLY, MSG.CHAN, MSG.STATE, DEF_STATE);
 		});
 	}
 }
