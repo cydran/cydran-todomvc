@@ -58,7 +58,7 @@
 			<div class="view">
 				<input class="toggle" type="checkbox" c-onclick="m().isComplete()" c-checked="v().completed" />
 				<label c-ondblclick="m().edit()">{{v().title}}</label>
-				<button class="destroy" c-onclick="m().kill()"></button>
+				<span class="destroy" c-onclick="m().killItem()" c-enabled="!m().inEditMode"></span>
 			</div>
 			<input class="edit" type="text" c-model="v().title" c-onkeyup="m().tryUpdate(p().$event)" c-force-focus="m().inEditMode" />
 		</li>

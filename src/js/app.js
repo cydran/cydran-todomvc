@@ -1,7 +1,7 @@
 import { TodoRepo, MSG } from './data/repo.js';
 import { TodoEntity } from './data/TodoEntity.js';
 
-// import quotes from "./data/quotes.json" with {type: 'json'};
+import quotes from "./data/quotes.json" with {type: 'json'};
 /*
 import {argumentsBuilder as ab, PropertyKeys, uuidV4, Component} from "../node_modules/cydran/dist/cydran.js";
 */
@@ -21,19 +21,21 @@ const RMV_TODO = 'removeTodo';
 const PATCH_TODO = 'patchTodo';
 
 const DATA_SRLZ_LVL = 'cydran.logging.TodoRepo.level';
+const TODOITEM_LOGRS = 'cydran.logging.todoitem.level';
 const PERSONALIZED = 'todo.person';
 
 const PROPERTIES = {
 	[PERSONALIZED]: EMPTY_STR,
 	[PropertyKeys.CYDRAN_STRICT_ENABLED]: true,
 	[PropertyKeys.CYDRAN_STRICT_STARTPHRASE]:
-		"Sometimes it pays to stay in bed on Monday, rather than spending the rest of the week debugging Monday's code. (Dan Salomon)",
+		"In God we trust. All others must bring data. (W. Edwards Demming)",
 	[`${PropertyKeys.CYDRAN_LOG_COLOR_PREFIX}.debug`]: '#00f900',
 	[PropertyKeys.CYDRAN_LOG_LEVEL]: 'trace',
 	[PropertyKeys.CYDRAN_LOG_LABEL]: 'ctdmvc',
 	[PropertyKeys.CYDRAN_LOG_LABEL_VISIBLE]: false,
 	[PropertyKeys.CYDRAN_LOG_PREAMBLE_ORDER]: 'level:name',
-	[DATA_SRLZ_LVL]: 'trace'
+	[DATA_SRLZ_LVL]: 'trace',
+	[TODOITEM_LOGRS]: 'trace'
 };
 
 const template = id =>
@@ -57,18 +59,12 @@ class App extends Component {
 		this.newTodoValue = EMPTY_STR;
 
 		// msgs from todo items
-		this.$c().onMessage(RMV_TODO).forChannel(TODO_CHANNEL).invoke((payload) => {
-			this.$c().getLogger(`Removing a todo item: ${payload.id}`);
-			this.removeTodo(payload);
-		});
-		this.$c().onMessage(PATCH_TODO).forChannel(TODO_CHANNEL).invoke((payload) => {
-			this.$c().getLogger(`Updating a todo item: ${payload.id}`)
-			this.updateTodo(payload);
-		});
+		this.$c().onMessage(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
+		this.$c().onMessage(PATCH_TODO).forChannel(TODO_CHANNEL).invoke(this.updateTodo);
 
 		// msgs from the repo
-		this.$c().onMessage(MSG.ALL).forChannel(MSG.CHAN).invoke(data => (this.todos = data));
-		this.$c().onMessage(MSG.STATE).forChannel(MSG.CHAN).invoke(data => (this.filterVisiblity = data));
+		this.$c().onMessage(MSG.ALL).forChannel(MSG.DATA_CHANNEL).invoke(data => (this.todos = data));
+		this.$c().onMessage(MSG.STATE).forChannel(MSG.DATA_CHANNEL).invoke(data => (this.filterVisiblity = data));
 	}
 
 	onMount() {
@@ -101,7 +97,7 @@ class App extends Component {
 	}
 
 	removeTodo(todo) {
-		const removeIdx = this.todos.findIndex(e => e.id === todo.id);
+		const removeIdx = this.todos.findIndex(t => t.id === todo.id);
 		if (removeIdx > -1) {
 			this.todos.splice(removeIdx, 1);
 			this.repo.remove(todo);
@@ -124,26 +120,24 @@ class App extends Component {
 	toggleAll() {
 		this.todos.forEach(todo => (todo.completed = !this.togAllDoneOrNot));
 		this.togAllDoneOrNot = !this.togAllDoneOrNot;
-		this.$c()
-			.getLogger()
-			.ifDebug(() => `all items marked done: ${this.togAllDoneOrNot}`);
+		this.$c().getLogger().ifDebug(() => `all items marked done: ${this.togAllDoneOrNot}`);
 	}
 }
 
 class TodoItem extends Component {
-	constructor() {
+	constructor(txmitr) {
 		super(template(TodoItem.name.toLowerCase()));
+		this.txmitr = txmitr;
 		this.inEditMode = false;
 		this.origEditText = EMPTY_STR;
-		this.dirty = false;
 
 		this.$c().onExpressionValueChange('v().completed', () => {
-			this.$c().send(To.GLOBALLY, TODO_CHANNEL, PATCH_TODO, this.$c().getValue());
+			this.sendUpdate();
 		});
 	}
 
-	kill() {
-		this.$c().send(To.GLOBALLY, TODO_CHANNEL, RMV_TODO, this.$c().getValue());
+	killItem() {
+		this.txmitr.send(To.GLOBALLY, TODO_CHANNEL, RMV_TODO, this.$c().getValue());
 	}
 
 	edit() {
@@ -152,33 +146,28 @@ class TodoItem extends Component {
 	}
 
 	tryUpdate(event) {
-		if (event.code == KEY_ENTER) {
+		if (event.code == KEY_ENTER ) {
 			this.inEditMode = !this.inEditMode;
 			this.origEditText = EMPTY_STR;
-			this.$c().send(To.GLOBALLY, TODO_CHANNEL, PATCH_TODO, this.$c().getValue());
+			this.sendUpdate();
 		}
 	}
 
 	isComplete() {
 		this.$c().getValue().completed = !this.$c().getValue().completed;
 	}
+
+	sendUpdate() {
+		this.txmitr.send(To.GLOBALLY, TODO_CHANNEL, PATCH_TODO, this.$c().getValue());
+	}
 }
 
 function rootCapability(ctxt) {
 	ctxt.getScope().add('pluralize', (str, cnt) => (cnt !== 1 ? `${str}s` : str));
 	ctxt.registerPrototype(App.name, App);
-	ctxt.registerSingleton(
-		TodoRepo.name,
-		TodoRepo,
-		ab()
-			.withLogger(
-				`${App.name}.Repo`,
-				ctxt.getProperties().getAsString(DATA_SRLZ_LVL)
-			)
-			.withTransmitter()
-			.build()
-	);
-	ctxt.registerPrototype(TodoItem.name, TodoItem);
+	ctxt.registerSingleton(TodoRepo.name, TodoRepo,
+		ab().withLogger(`${App.name}.Repo`).withTransmitter().build());
+	ctxt.registerPrototype(TodoItem.name, TodoItem, ab().withTransmitter().build());
 }
 
 const stage = create('body>div#appbody', PROPERTIES, rootCapability);
@@ -188,3 +177,9 @@ stage.addInitializer(null, s => {
 
 stage.start();
 window['stage'] = stage;
+
+/*
+quotes.forEach(q => {
+	console.log(`${ q.quote }\n\t--- ${q.source}`);
+});
+*/

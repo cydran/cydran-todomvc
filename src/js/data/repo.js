@@ -14,7 +14,7 @@ const SCHEMA = {
 const DEF_STATE = "all";
 
 export const MSG = {
-	CHAN: "DATA",
+	DATA_CHANNEL: "DATA",
 	ALL: "GetAll",
 	STATE: "ModState"
 }
@@ -57,9 +57,9 @@ export class TodoRepo {
 	getAll() {
 		this.db[TBL_TD].toArray().then(async resp => {
 			this.logr.ifTrace(() => `get all todos`);
-			await this.trxmtr.send(To.GLOBALLY, MSG.CHAN, MSG.ALL, resp);
+			await this.trxmtr.send(To.GLOBALLY, MSG.DATA_CHANNEL, MSG.ALL, resp);
 		}).catch(err => {
-			this.trxmtr.send(To.GLOBALLY, MSG.CHAN, MSG.ALL, []);
+			this.trxmtr.send(To.GLOBALLY, MSG.DATA_CHANNEL, MSG.ALL, []);
 		});
 	}
 
@@ -73,10 +73,10 @@ export class TodoRepo {
 
 	getVisibleState() {
 		this.db[TBL_TS].get(1).then(async resp => {
-			await this.trxmtr.send(To.GLOBALLY, MSG.CHAN, MSG.STATE, resp.value);
+			await this.trxmtr.send(To.GLOBALLY, MSG.DATA_CHANNEL, MSG.STATE, resp.value);
 			this.logr.ifTrace(() => `get visible state`);
 		}).catch(err => {
-			this.trxmtr.send(To.GLOBALLY, MSG.CHAN, MSG.STATE, DEF_STATE);
+			this.trxmtr.send(To.GLOBALLY, MSG.DATA_CHANNEL, MSG.STATE, DEF_STATE);
 		});
 	}
 }
