@@ -1,7 +1,7 @@
 import { TodoRepo, MSG } from './data/repo.js';
 import { TodoEntity } from './data/TodoEntity.js';
 
-import quotes from "./data/quotes.json" with {type: 'json'};
+// import quotes from "./data/quotes.json" with {type: 'json'};
 /*
 import {argumentsBuilder as ab, PropertyKeys, uuidV4, Component} from "../node_modules/cydran/dist/cydran.js";
 */
