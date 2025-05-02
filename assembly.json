@@ -2,8 +2,8 @@
 	"copyFiles": [
 		{
 			"from": {
-				"default": "node_modules/cydran/dist/cydran.min.js",
-				"development": "node_modules/cydran/dist/cydran.js"
+				"default": "node_modules/@cydran/cydran/dist/cydran.min.js",
+				"development": "node_modules/@cydran/cydran/dist/cydran.js"
 			},
 			"to": "dist/js/cydran.js"
 		},
