@@ -1,9 +1,8 @@
 export class TodoEntity {
 	constructor(id) {
-		this.id = id ?? self.crypto.randomUUID();
+		this.id = id;
 		this.title = null;
 		this.completed = false;
-		this.created = null;
-		this.updated = null;
+		this.created = new Date();
 	}
 }

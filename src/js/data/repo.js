@@ -1,49 +1,82 @@
-const VSTATE_KEY = "visibility";
+import { Dexie } from "/js/data/dexie.mjs";
+
+const To = cydran.To;
+
+const DB_NAME = "todolist-dexie";
+const TBL_TD = "todos";
+const TBL_TS = "state";
+
+const SCHEMA = {
+	[TBL_TD]: `id, title, completed, created`,
+	[TBL_TS]: `id, visibility`
+}
+
 const DEF_STATE = "all";
 
+export const MSG = {
+	DATA_CHANNEL: "DATA",
+	ALL: "GetAll",
+	STATE: "ModState"
+}
+
 export class TodoRepo {
-	constructor(logger) {
-		this.repo = window.localStorage;
+	constructor(logger, trxmtr) {
+		this.trxmtr = trxmtr;
 		this.logr = logger;
+		this.db = new Dexie(DB_NAME, { autoOpen: false });
+		this.db.version(1).stores(SCHEMA);
+		this.db.open().catch (function (err) {
+			this.logr.ifError(() => `Failed to open db: ${ err }`);
+		});
 	}
 
 	add(todo) {
-		todo.created = new Date();
-		this.upsert(todo, "created");
+		this.db[TBL_TD].add(todo).then(async resp => {
+			await this.logr.ifTrace(() => `add todo: id = ${ resp }`);
+		}).catch(err => {
+			this.logr.ifError(() => err);
+		});
 	}
 
 	update(todo) {
-		todo.updated = new Date();
-		this.upsert(todo, "updated");
-	}
-
-	upsert(todo, act) {
-		this.repo.setItem(todo.id, JSON.stringify(todo));
-		this.logr.ifTrace(() => `${ act } todo - id: ${ todo.id }`);
+		this.db[TBL_TD].put(todo).then(async resp => {
+			await this.logr.ifTrace(() => `update todo: id = ${ todo.id }`);
+		}).catch(err => {
+			this.logr.ifError(() => err);
+		});
 	}
 
 	remove(todo) {
-		this.repo.removeItem(todo.id);
-		this.logr.ifTrace(() => `removed todo - id: ${ todo.id }`);
+		this.db[TBL_TD].delete(todo.id).then(async resp => {
+			await this.logr.ifTrace(() => `delete todo: id = ${ todo.id }`);
+		}).catch(err => {
+			this.logr.ifError(() => err);
+		});
 	}
 
 	getAll() {
-		const retval = [];
-		Object.keys(this.repo).filter((k) => k != VSTATE_KEY)
-			.forEach(k => {
-				retval.push(JSON.parse(this.repo.getItem(k)));
-			});
-		this.logr.ifTrace(() => retval.length > 0 ? `retrieved all (${ retval.length }) todos` : `no todos available`);
-		return retval;
+		this.db[TBL_TD].toArray().then(async resp => {
+			this.logr.ifTrace(() => `get all todos`);
+			await this.trxmtr.send(To.GLOBALLY, MSG.DATA_CHANNEL, MSG.ALL, resp);
+		}).catch(err => {
+			this.trxmtr.send(To.GLOBALLY, MSG.DATA_CHANNEL, MSG.ALL, []);
+		});
 	}
 
-	storeVisibleState(vstate) {
-		this.repo.setItem(VSTATE_KEY, vstate);
-		this.logr.ifTrace(() => `stored visible state: ${ vstate }`);
+	storeVisibleState(state) {
+		this.db[TBL_TS].put({"id": 1, "value": state}).then(resp => {
+			this.logr.ifTrace(() => `add/update visibile state: ${state}`);
+		}).catch(err => {
+			this.logr.ifError(() => err);
+		});
 	}
 
 	getVisibleState() {
-		this.logr.ifTrace(() => `retrieve visible state`);
-		return this.repo.getItem(VSTATE_KEY) ?? DEF_STATE;
+		this.db[TBL_TS].get(1).then(async resp => {
+			await this.trxmtr.send(To.GLOBALLY, MSG.DATA_CHANNEL, MSG.STATE, resp.value);
+			this.logr.ifTrace(() => `get visible state`);
+		}).catch(err => {
+			this.trxmtr.send(To.GLOBALLY, MSG.DATA_CHANNEL, MSG.STATE, DEF_STATE);
+		});
 	}
 }

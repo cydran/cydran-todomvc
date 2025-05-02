@@ -4,7 +4,7 @@
   "description": "TodoMVC implementation with Cydran MVVM framework",
   "main": "index.js",
   "scripts": {
-    "clean": "npx rimraf --glob dist/**/**.*",
+    "clean": "npx rimraf dist/**",
     "build": "npm run clean && npx copy-files-from-to --config ./assembly.json",
     "serve": "npm run build && npx ws -c ./lws.config.js"
   },
@@ -21,17 +21,20 @@
   },
   "homepage": "https://github.com/cydran/cydran-todomvc#readme",
   "dependencies": {
+    "@cydran/cydran": "0.4.0",
     "cydran": "0.2.1",
+    "dexie": "4.0.11",
     "todomvc-app-css": "2.4.3",
     "todomvc-common": "1.0.5"
   },
   "bundleDependencies": [
+    "@cydran/cydran",
     "dexie",
     "todomvc-app-css",
     "todomvc-common"
   ],
   "devDependencies": {
-    "copy-files-from-to": "3.11.0",
+    "copy-files-from-to": "3.12.1",
     "local-web-server": "5.4.0",
     "rimraf": "6.0.1"
   }

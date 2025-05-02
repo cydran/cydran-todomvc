@@ -2,8 +2,8 @@
 	"copyFiles": [
 		{
 			"from": {
-				"default": "node_modules/cydran/dist/cydran.min.js",
-				"development": "node_modules/cydran/dist/cydran.js"
+				"default": "node_modules/@cydran/cydran/dist/cydran.min.js",
+				"development": "node_modules/@cydran/cydran/dist/cydran.js"
 			},
 			"to": "dist/js/cydran.js"
 		},
@@ -18,6 +18,10 @@
 		{
 			"from": "node_modules/todomvc-common/base.js",
 			"to": "dist/js/base.js"
+		},
+		{
+			"from": "node_modules/dexie/dist/dexie.mjs",
+			"to": "dist/js/data/dexie.mjs"
 		},
 		{
 			"from": "src/**",

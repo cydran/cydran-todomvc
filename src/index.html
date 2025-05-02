@@ -8,10 +8,10 @@
 		<meta name="description" content="TodoMvc application based on https://todomvc.com" />
 		<meta name="theme-color" content="#3367D6" />
 		<link rel="manifest" href="manifest.json" />
-		<link rel="icon" type="image/svg" href="images/tick.svg" />
-		<link rel="stylesheet" type="text/css" href="css/base.css" />
-		<link rel="stylesheet" type="text/css" href="css/index.css" />
-		<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<link rel="icon" type="image/svg" href="images/tick.svg">
+		<link rel="stylesheet" type="text/css" href="css/base.css">
+		<link rel="stylesheet" type="text/css" href="css/index.css">
+		<link rel="stylesheet" type="text/css" href="css/app.css">
 		<script src="js/base.js"></script>
 		<script src="js/cydran.js"></script>
 		<script src="js/app.js" type="module"></script>
@@ -25,13 +25,11 @@
 			<!--p>Part of <a target="_new" href="http://todomvc.com">TodoMVC</a></p-->
 		</footer>
 	</body>
-
 	<template id="app">
 		<section class="todoapp">
 			<header class="header">
-				<h1><span c-if="m().who.length > 0">[[m().who]]&nbsp;</span>todos</h1>
-				<input class="new-todo" autofocus="true" autocomplete="off" placeholder="What needs to be done?"
-					c-onkeyup="m().addTodo($event)" c-model="m().newTodoValue">
+				<h1>todos</h1>
+				<input class="new-todo" autofocus="true" autocomplete="off" placeholder="What needs to be done?" c-onkeyup="m().addTodo(p().$event)" c-model="m().newTodoValue">
 			</header>
 			<section class="main" c-if="m().todos.length > 0">
 				<input id="toggle-all" class="toggle-all" type="checkbox" c-onclick="m().toggleAll()">
@@ -44,30 +42,25 @@
 			</section>
 			<footer class="footer" c-if="m().todos.length > 0">
 				<span class="todo-count">
-					<strong>{{m().remaining}}</strong> {{pluralize('item', m().remaining)}} left
+					<strong>{{m().remaining}}</strong> {{s().pluralize('item', m().remaining)}} left
 				</span>
 				<ul class="filters">
 					<li><a c-onclick="m().filterVisiblity = 'all'" c-class="{'selected': m().filterVisiblity == 'all'}">All</a></li>
-					<li><a c-onclick="m().filterVisiblity = 'active'"
-							c-class="{'selected': m().filterVisiblity == 'active'}">Active</a></li>
-					<li><a c-onclick="m().filterVisiblity = 'completed'"
-							c-class="{'selected': m().filterVisiblity == 'completed'}">Completed</a></li>
+					<li><a c-onclick="m().filterVisiblity = 'active'" c-class="{'selected': m().filterVisiblity == 'active'}">Active</a></li>
+					<li><a c-onclick="m().filterVisiblity = 'completed'" c-class="{'selected': m().filterVisiblity == 'completed'}">Completed</a></li>
 				</ul>
-				<button class="clear-completed" c-onclick="m().removeCompletedItems()"
-					c-if="m().todos.length - m().remaining > 0">Clear completed</button>
+				<button class="clear-completed" c-onclick="m().removeCompletedItems()" c-if="m().todos.length - m().remaining > 0">Clear completed</button>
 			</footer>
 		</section>
 	</template>
-
 	<template id="todoitem">
 		<li class="todo" c-class="{'completed': v().completed, 'editing': m().inEditMode}">
 			<div class="view">
 				<input class="toggle" type="checkbox" c-onclick="m().isComplete()" c-checked="v().completed" />
 				<label c-ondblclick="m().edit()">{{v().title}}</label>
-				<button class="destroy" c-onclick="m().kill($event)"></button>
+				<span class="destroy" c-onclick="m().killItem()" c-enabled="!m().inEditMode"></span>
 			</div>
-			<input class="edit" type="text" c-model="v().title" c-onkeyup="m().tryUpdate($event)"
-				c-force-focus="m().inEditMode" />
+			<input class="edit" type="text" c-model="v().title" c-onkeyup="m().tryUpdate(p().$event)" c-force-focus="m().inEditMode" />
 		</li>
 	</template>
 
