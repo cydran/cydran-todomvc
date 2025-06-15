@@ -145,5 +145,44 @@
 	{
 		"quote": "I'm not a great programmer. I'm just a good programmer with great habits.",
 		"source": "Kent Beck"
+	},
+	{
+		"quote": "One man's crappy software is another man's full-time job.",
+		"source": "Jessica Gaston"
+	},
+	{
+		"quote": "Programming today is a race between software engineers striving to build bigger and better idiot-proof programs, and the universe trying to produce bigger and better idiots. So far, the universe is winning.",
+		"source": "Rick Cook"
+	},
+	{
+		"quote": "One trick to programming faster is to do less in your head & run the code more.",
+		"source": "Greg Brockman"
+	},
+	{
+		"quote": "Programs must be written for people to read, and only incidentally for machines to execute.",
+		"source": "Hal Abelson"
+	},
+	{
+		"quote": "Controlling complexity is the essence of computer programming.",
+		"source": "Brian W. Kernighan"
+	},
+	{ "quote": "Code never lies, comments sometimes do.",
+		"source": "Ron Jeffries"
+	},
+	{
+		"quote": "The best way to predict the future is to invent it.",
+		"source": "John Kenneth Galbraith"
+	},
+	{
+		"quote": "Copy and paste is a design error.",
+		"source": "David Parnas"
+	},
+	{
+		"quote": "Crash programs fail because they are based on theory that, with nine women pregnant, you can get a baby in a month.",
+		"source": "Wernher Von Braun"
+	},
+	{
+		"quote": "Einstein repeatedly argued that there must be simplified explanations of nature, because God is not capricious or arbitrary. No such faith comforts the software engineer.",
+		"source": "Fred Brooks"
 	}
 ]
