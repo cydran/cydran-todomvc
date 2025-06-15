@@ -4,7 +4,7 @@
   "description": "TodoMVC implementation with Cydran MVVM framework",
   "main": "index.js",
   "scripts": {
-    "clean": "npx rimraf dist/**",
+    "clean": "npx rimraf dist/",
     "build": "npm run clean && npx copy-files-from-to --config ./assembly.json",
     "serve": "npm run build && npx ws -c ./lws.config.js"
   },
