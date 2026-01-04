@@ -21,9 +21,9 @@
   },
   "homepage": "https://github.com/cydran/cydran-todomvc#readme",
   "dependencies": {
-    "@cydran/cydran": "0.4.0",
+    "@cydran/cydran": "0.5.0",
     "cydran": "0.2.1",
-    "dexie": "4.0.11",
+    "dexie": "4.2.1",
     "todomvc-app-css": "2.4.3",
     "todomvc-common": "1.0.5"
   },
@@ -34,8 +34,8 @@
     "todomvc-common"
   ],
   "devDependencies": {
-    "copy-files-from-to": "3.12.1",
+    "copy-files-from-to": "4.0.0",
     "local-web-server": "5.4.0",
-    "rimraf": "6.0.1"
+    "rimraf": "6.1.2"
   }
 }
