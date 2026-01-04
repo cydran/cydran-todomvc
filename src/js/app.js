@@ -28,7 +28,7 @@ const PROPERTIES = {
 	[PERSONALIZED]: EMPTY_STR,
 	[PropertyKeys.CYDRAN_STRICT_ENABLED]: true,
 	[PropertyKeys.CYDRAN_STRICT_STARTPHRASE]:
-		"In God we trust. All others must bring data. (W. Edwards Demming)",
+		"The first 90% of the code accounts for the first 90% of the development time. The remaining 10% of the code accounts for the other 90% of the development time. (Tom Cargill)",
 	[`${PropertyKeys.CYDRAN_LOG_COLOR_PREFIX}.debug`]: '#00f900',
 	[PropertyKeys.CYDRAN_LOG_LEVEL]: 'trace',
 	[PropertyKeys.CYDRAN_LOG_LABEL]: 'ctdmvc',
@@ -46,7 +46,10 @@ class App extends Component {
 		super(template(App.name.toLowerCase()));
 
 		this.filterVisiblity;
-		this.todos = [];
+		this.todos = new Array();
+		this.filtered = this.$c().createFilter('m().todos')
+			.withPredicate("p(0) === 'all' || !v().completed && p(0) === 'active' || v().completed && p(0) === 'completed'", 'm().filterVisiblity')
+			.build();
 		this.$c().onExpressionValueChange('m().todos', () =>
 			this.computeRemaining()
 		);
@@ -63,25 +66,23 @@ class App extends Component {
 		this.$c().onMessage(PATCH_TODO).forChannel(TODO_CHANNEL).invoke(this.updateTodo);
 
 		// msgs from the repo
-		this.$c().onMessage(MSG.ALL).forChannel(MSG.DATA_CHANNEL).invoke(data => (this.todos = data));
-		this.$c().onMessage(MSG.STATE).forChannel(MSG.DATA_CHANNEL).invoke(data => (this.filterVisiblity = data));
+		this.$c().onMessage(MSG.ALL).forChannel(MSG.DATA_CHANNEL).invoke(data => {
+			this.todos = data;
+		});
+		this.$c().onMessage(MSG.STATE).forChannel(MSG.DATA_CHANNEL).invoke(data => {
+			this.filterVisiblity = data;
+		});
 	}
 
 	onMount() {
 		this.repo = this.$c().getObject(TodoRepo.name);
 		this.repo.getVisibleState();
 		this.repo.getAll();
-		this.filtered = this.$c()
-			.createFilter('m().todos')
-			.withPredicate(
-				"p(0) === 'all' || !v().completed && p(0) === 'active' || v().completed && p(0) === 'completed'",
-				'm().filterVisiblity'
-			)
-			.build();
+		this.$c().getLogger().ifDebug(() => `items: ${ JSON.stringify(this.todos) }`);
 	}
 
 	computeRemaining() {
-		this.remaining = this.todos.filter(t => !t.completed).length;
+		this.remaining = this.todos.filter(t => !t.completed)?.length;
 	}
 
 	addTodo(event) {
