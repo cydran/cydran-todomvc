@@ -13,11 +13,11 @@
 	},
 	{
 		"quote": "In God we trust. All others must bring data.",
-		"source": "W. Edwards Demming"
+		"source": "W. Edwards Deming"
 	},
 	{
 		"quote": "In theory, theory and practice are the same. In practice, they're not.",
-		"source": "Yoggi Berra"
+		"source": "Yogi Berra (attributed)"
 	},
 	{
 		"quote": "You can't have great software without a great team, and most software teams behave like dysfunctional families.",
@@ -37,11 +37,11 @@
 	},
 	{
 		"quote": "Sufficiently advanced incompetence is indistinguishable from malice.",
-		"source": "Modified Clark's Law by J. Porter Clark"
+		"source": "Hanlon's Razor - attributed to Robert Hanlon Jr."
 	},
 	{
 		"quote": "A computer is a stupid machine with the ability to do incredibly smart things, while computer programmers are smart people with the ability to do incredibly stupid things. They are, in short, a perfect match.",
-		"source": "Bill Bryson"
+		"source": "Unknown"
 	},
 	{
 		"quote": "The question of whether computers can think is just like the question of whether submarines can swim.",
@@ -85,7 +85,7 @@
 	},
 	{
 		"quote": "A clever person solves a problem. A wise person avoids it.",
-		"source": "Albert Einstein"
+		"source": "Anonymous"
 	},
 	{
 		"quote": "Sometimes it pays to stay in bed on Monday, rather than spending the rest of the week debugging Monday's code.",
@@ -105,7 +105,7 @@
 	},
 	{
 		"quote": "Never trust a computer you can't throw it out a window.",
-		"source": "Steve Wozniak"
+		"source": "Unknown"
 	},
 	{ "quote": "A good programmer is someone who always looks both ways before crossing a one-way street.",
 		"source": "Doug Linder"
@@ -155,7 +155,7 @@
 		"source": "Rick Cook"
 	},
 	{
-		"quote": "One trick to programming faster is to do less in your head & run the code more.",
+		"quote": "One trick to programming faster is to do less in your head and run the code more.",
 		"source": "Greg Brockman"
 	},
 	{
@@ -171,7 +171,7 @@
 	},
 	{
 		"quote": "The best way to predict the future is to invent it.",
-		"source": "John Kenneth Galbraith"
+		"source": "Alan Kay"
 	},
 	{
 		"quote": "Copy and paste is a design error.",
@@ -184,5 +184,81 @@
 	{
 		"quote": "Einstein repeatedly argued that there must be simplified explanations of nature, because God is not capricious or arbitrary. No such faith comforts the software engineer.",
 		"source": "Fred Brooks"
+	},
+	{
+		"quote": "Give a man a program, frustrate him for a day. Teach a man to program, frustrate him for a lifetime.",
+		"source": "Muhammad Waseem"
+	},
+	{
+		"quote": "A language that doesn't affect the way you think about programming is not worth knowing.",
+		"source": "Alan J. Perlis"
+	},
+	{
+		"quote": "Remember that code is really the language in which we ultimately express the requirements. We may create languages that are closer to the requirements. We may create tools that help us parse and assemble those requirements into formal structures. But we will never eliminate necessary precision—so there will always be code.",
+		"source": "Robert C. Martin"
+	},
+	{
+		"quote": "Learning the art of programming, like most other disciplines, consists of first learning the rules and then learning when to break them.",
+		"source": "Joshua Bloch, Effective Java : Programming Language Guidelines"
+	},
+	{
+		"quote": "If, at first, you do not succeed, call it version 1.0.",
+		"source": "Khayri R.R. Woulfe"
+	},
+	{
+		"quote": "When I wrote this, only God and I understood what I was doing. Now, God only knows.",
+		"source": "Anonymous"
+	},
+	{
+		"quote": "Don't comment bad code - rewrite it.",
+		"source": "Brian W. Kernighan"
+	},
+	{
+		"quote": "Clean code always looks like it was written by someone who cares.",
+		"source": "Martin Fowler"
+	},
+	{
+		"quote": "If the code and the comments do not match, possibly both are incorrect.",
+		"source": "Norm Schryer"
+	},
+	{
+		"quote": "Debugging becomes significantly easier if you first admit that you are the problem.",
+		"source": "William Lauder"
+	},
+	{
+		"quote": "Experience is the name everyone gives to their mistakes.",
+		"source": "Oscar Wilde"
+	},
+	{
+		"quote": "Software and cathedrals are much the same — first we build them, then we pray.",
+		"source": "Anonymous"
+	},
+	{
+		"quote": "In programming, the hard part isn't solving problems but deciding what problems to solve.",
+		"source": "Paul Graham"
+	},
+	{
+		"quote": "Science is what we understand well enough to explain to a computer. Art is everything else we do.",
+		"source": "Donald Knuth"
+	},
+	{
+		"quote": "The hardest part of the software task is arriving at a complete and consistent specification, and much of the essence of building a program is in fact the debugging of the specification.",
+		"source": "Fred Brooks"
+	},
+	{
+		"quote": "The best thing about a boolean is even if you are wrong, you are only off by one.",
+		"source": "Anonymous"
+	},
+	{
+		"quote": "Coding is not about typing; it's about thinking.",
+		"source": "Rich Hickey"
+	},
+	{
+		"quote": "Any code of your own that you haven't looked at for six or more months might as well have been written by someone else.",
+		"source": "Eagleson's Law"
+	},
+	{
+		"quote": "Rules of Optimization: Rule 1: Don't do it. Rule 2 (for experts only): Don't do it yet.",
+		"source": "M.A. Jackson"
 	}
 ]
