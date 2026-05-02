@@ -1,9 +1,10 @@
 import { TodoRepo, MSG } from './data/repo.js';
 import { TodoEntity } from './data/TodoEntity.js';
+import { uuidv7 } from "/js/uuidv7.js";
 
 // import quotes from "./data/quotes.json" with {type: 'json'};
 /*
-import {argumentsBuilder as ab, PropertyKeys, uuidV4, Component} from "../node_modules/cydran/dist/cydran.js";
+import {argumentsBuilder as ab, PropertyKeys, uuidV7, Component} from "../node_modules/cydran/dist/cydran.js";
 */
 
 const ab = cydran.argumentsBuilder;
@@ -87,7 +88,7 @@ class App extends Component {
 
 	addTodo(event) {
 		if (event.code === KEY_ENTER) {
-			const newTodoItem = new TodoEntity(self.crypto.randomUUID());
+			const newTodoItem = new TodoEntity(uuidv7());
 			newTodoItem.title = this.newTodoValue;
 			event.target.value = EMPTY_STR;
 			this.todos.push(newTodoItem);

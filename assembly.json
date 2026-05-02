@@ -24,6 +24,10 @@
 			"to": "dist/js/data/dexie.mjs"
 		},
 		{
+			"from": "node_modules/uuidv7/dist/index.js",
+			"to": "dist/js/uuidv7.js"
+		},
+		{
 			"from": "src/**",
 			"to": "dist"
 		}
