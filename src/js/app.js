@@ -51,28 +51,28 @@ class App extends Component {
 		this.filtered = this.$c().createFilter('m().todos')
 			.withPredicate("p(0) === 'all' || !v().completed && p(0) === 'active' || v().completed && p(0) === 'completed'", 'm().filterVisiblity')
 			.build();
-		this.$c().onExpressionValueChange('m().todos', () =>
-			this.computeRemaining()
-		);
-		this.$c().onExpressionValueChange('m().filterVisiblity', () =>
-			this.repo.storeVisibleState(this.filterVisiblity)
-		);
+		this.$c().onExpressionValueChange('m().todos', this, "computeRemaining");
+		this.$c().onExpressionValueChange('m().filterVisiblity', this, "onVisibleStateChange");
 
 		this.remaining = 0;
 		this.togAllDoneOrNot = false;
 		this.newTodoValue = EMPTY_STR;
 
 		// msgs from todo items
-		this.$c().onMessage(RMV_TODO).forChannel(TODO_CHANNEL).invoke(this.removeTodo);
-		this.$c().onMessage(PATCH_TODO).forChannel(TODO_CHANNEL).invoke(this.updateTodo);
+		this.$c().onMessage(RMV_TODO).forChannel(TODO_CHANNEL).invoke("removeTodo");
+		this.$c().onMessage(PATCH_TODO).forChannel(TODO_CHANNEL).invoke("updateTodo");
 
 		// msgs from the repo
-		this.$c().onMessage(MSG.ALL).forChannel(MSG.DATA_CHANNEL).invoke(data => {
-			this.todos = data;
-		});
-		this.$c().onMessage(MSG.STATE).forChannel(MSG.DATA_CHANNEL).invoke(data => {
-			this.filterVisiblity = data;
-		});
+		this.$c().onMessage(MSG.ALL).forChannel(MSG.DATA_CHANNEL).invoke("onDataUpdate");
+		this.$c().onMessage(MSG.STATE).forChannel(MSG.DATA_CHANNEL).invoke("onFilterStateChange");
+	}
+
+	onDataUpdate(data) {
+		this.todos = data;
+	}
+
+	onFilterStateChange(data) {
+		this.filterVisiblity = data;
 	}
 
 	onMount() {
@@ -84,6 +84,10 @@ class App extends Component {
 
 	computeRemaining() {
 		this.remaining = this.todos.filter(t => !t.completed)?.length;
+	}
+
+	onVisibleStateChange() {
+		this.repo.storeVisibleState(this.filterVisiblity);
 	}
 
 	addTodo(event) {
@@ -132,10 +136,11 @@ class TodoItem extends Component {
 		this.txmitr = txmitr;
 		this.inEditMode = false;
 		this.origEditText = EMPTY_STR;
+		this.$c().onExpressionValueChange('v().completed', this, "onCompletedChange");
+	}
 
-		this.$c().onExpressionValueChange('v().completed', () => {
-			this.sendUpdate();
-		});
+	onCompletedChange(data) {
+		this.sendUpdate();
 	}
 
 	killItem() {
@@ -167,8 +172,7 @@ class TodoItem extends Component {
 function rootCapability(ctxt) {
 	ctxt.getScope().add('pluralize', (str, cnt) => (cnt !== 1 ? `${str}s` : str));
 	ctxt.registerPrototype(App.name, App);
-	ctxt.registerSingleton(TodoRepo.name, TodoRepo,
-		ab().withLogger(`${App.name}.Repo`).withTransmitter().build());
+	ctxt.registerSingleton(TodoRepo.name, TodoRepo, ab().withLogger(`${App.name}.Repo`).withTransmitter().build());
 	ctxt.registerPrototype(TodoItem.name, TodoItem, ab().withTransmitter().build());
 }
 
