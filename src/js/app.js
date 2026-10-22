@@ -51,8 +51,8 @@ class App extends Component {
 		this.filtered = this.$c().createFilter('m().todos')
 			.withPredicate("p(0) === 'all' || !v().completed && p(0) === 'active' || v().completed && p(0) === 'completed'", 'm().filterVisiblity')
 			.build();
-		this.$c().onExpressionValueChange('m().todos', this, "computeRemaining");
-		this.$c().onExpressionValueChange('m().filterVisiblity', this, "onVisibleStateChange");
+		this.$c().onExpressionValueChange('m().todos').invoke("computeRemaining");
+		this.$c().onExpressionValueChange('m().filterVisiblity').invoke("onVisibleStateChange");
 
 		this.remaining = 0;
 		this.togAllDoneOrNot = false;
@@ -136,7 +136,7 @@ class TodoItem extends Component {
 		this.txmitr = txmitr;
 		this.inEditMode = false;
 		this.origEditText = EMPTY_STR;
-		this.$c().onExpressionValueChange('v().completed', this, "onCompletedChange");
+		this.$c().onExpressionValueChange('v().completed').invoke("onCompletedChange");
 	}
 
 	onCompletedChange(data) {
