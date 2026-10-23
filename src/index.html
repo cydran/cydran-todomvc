@@ -22,11 +22,9 @@
 	<div id="appbody"></div>
 	<footer class="info">
 		<p>Double-click to edit a todo</p>
-		<p>
-			Written by <a target="_new"
-				href="https://github.com/orgs/cydran/teams/cydran-devs">Cydran Dev Team</a>
+		<p>Derived from <a target="_new" href="http://todomvc.com">TodoMVC</a> by <a target="_new"
+				href="https://github.com/orgs/cydran/teams/cydran-devs">Cydran Development Team</a>
 		</p>
-		<!--p>Part of <a target="_new" href="http://todomvc.com">TodoMVC</a></p-->
 	</footer>
 </body>
 <template id="app">
@@ -65,8 +63,7 @@
 	</section>
 </template>
 <template id="todoitem">
-	<li class="todo"
-		c-class="{'completed': v().completed, 'editing': m().inEditMode}">
+	<li class="todo" c-class="{'completed': v().completed, 'editing': m().inEditMode}">
 		<div class="view">
 			<input class="toggle" type="checkbox" c-onclick="m().isComplete()"
 				c-checked="v().completed" /> <label c-ondblclick="m().edit()">{{v().title}}</label>
